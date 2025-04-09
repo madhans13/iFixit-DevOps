@@ -5,7 +5,7 @@ import image from '../assets/image.png';
 import laptop from '../assets/laptop.png';
 import community from '../assets/community.png';
 import { useNavigate, Link } from 'react-router-dom'; // ✅ import Link
-
+import heroImage from '../assets/repair.jpg'
 function HomePage() {
   const navigate = useNavigate();
 
@@ -58,19 +58,19 @@ function HomePage() {
 
       {/* --- Hero Section --- */}
       <main className="hero-section">
-        <div className="hero-content">
-          <h1>Explore a World of Repair</h1>
-          <div className="search-bar-hero">
-            <span className="search-icon">Q</span>
-            <input type="text" placeholder='Try "Moto G5 Plus screen"' />
-          </div>
-          <div className="separator">or</div>
-          <button className="find-device-button">
-            <span className="button-icon">🛠️</span>
-            Find Your Device
-          </button>
-        </div>
-      </main>
+  <div className="hero-content">
+    <h1>Explore a World of Repair</h1>
+    <div className="search-bar-hero">
+      <span className="search-icon">Q</span>
+      <input type="text" placeholder='Try "Moto G5 Plus screen"' />
+    </div>
+    <div className="separator">or</div>
+    <button className="find-device-button">
+      <span className="button-icon">🛠️</span>
+      Find Your Device
+    </button>
+  </div>
+</main>
 
       {/* --- Info Section --- */}
       <section className="info-section">
