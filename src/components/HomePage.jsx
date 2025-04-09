@@ -1,11 +1,28 @@
 import React from 'react';
 import '../componentStyles/HomePage.css';
-import { Rss, Wrench } from 'lucide-react';
+import {
+  Rss,
+  Wrench,
+  ShoppingCart,
+  User,
+  Globe,
+  Facebook,
+  Instagram,
+  Twitter,
+  Youtube,
+  Mail,
+  MessageCircle,
+  Music,
+  Video,
+  Search
+} from 'lucide-react';
 import image from '../assets/image.png';
+import logo from '../assets/react.svg';
 import laptop from '../assets/laptop.png';
 import community from '../assets/community.png';
-import { useNavigate, Link } from 'react-router-dom'; // ✅ import Link
-import heroImage from '../assets/repair.jpg'
+import { useNavigate, Link } from 'react-router-dom';
+import heroImage from '../assets/repair.jpg';
+
 function HomePage() {
   const navigate = useNavigate();
 
@@ -15,9 +32,9 @@ function HomePage() {
       <header className="main-header">
         <div className="header-content">
           <div className="header-left">
-            <Link to="/" className="logo-link">
-              <Wrench size={30} color="#0071CE" />
-            </Link>
+            <div className="logo">
+              <img src={logo} alt="Logo" />
+            </div>
             <nav className="main-nav">
               <ul>
                 <li><Link to="/fix-your-stuff">Fix Your Stuff</Link></li>
@@ -32,12 +49,12 @@ function HomePage() {
           </div>
           <div className="header-right">
             <div className="search-bar-header">
-              <span className="search-icon">Q</span>
+              <Search size={16} className="search-icon" />
               <input type="text" placeholder="Search" />
             </div>
             <div className="header-icons">
-              <Link to="/cart" aria-label="Cart">🛒</Link>
-              <Link to="/account" aria-label="Account">👤</Link>
+              <Link to="/cart" aria-label="Cart"><ShoppingCart size={18} /></Link>
+              <Link to="/account" aria-label="Account"><User size={18} /></Link>
             </div>
             <div className="language-selector">
               <span>EN</span>
@@ -53,24 +70,24 @@ function HomePage() {
 
       {/* --- Blue Banner --- */}
       <div className="shipping-banner">
-        Free Shipping on $75+ in the Contiguous USA
+        Welcome to world of repair
       </div>
 
       {/* --- Hero Section --- */}
       <main className="hero-section">
-  <div className="hero-content">
-    <h1>Explore a World of Repair</h1>
-    <div className="search-bar-hero">
-      <span className="search-icon">Q</span>
-      <input type="text" placeholder='Try "Moto G5 Plus screen"' />
-    </div>
-    <div className="separator">or</div>
-    <button className="find-device-button">
-      <span className="button-icon">🛠️</span>
-      Find Your Device
-    </button>
-  </div>
-</main>
+        <div className="hero-content">
+          <h1>Explore a World of Repair</h1>
+          <div className="search-bar-hero">
+            <Search size={16} className="search-icon" />
+            <input type="text" placeholder='Try "Moto G5 Plus screen"' />
+          </div>
+          <div className="separator">or</div>
+          <button className="find-device-button">
+            <Wrench size={16} className="button-icon" />
+            Find Your Device
+          </button>
+        </div>
+      </main>
 
       {/* --- Info Section --- */}
       <section className="info-section">
@@ -172,24 +189,27 @@ function HomePage() {
             </label>
           </div>
         </div>
+
         <div className="footer-bottom">
           <div className="help-translate">
-            <a href="#">Help translate <span aria-label="globe icon">🌐</span></a>
+            <a href="#">Help translate <Globe size={14} /></a>
           </div>
           <div className="social-links">
-            <a href="#" aria-label="Facebook" target="_blank">f</a>
-            <a href="#" aria-label="TikTok" target="_blank">♪</a>
-            <a href="#" aria-label="Instagram" target="_blank">X</a>
-            <a href="#" aria-label="Twitter" target="_blank">t</a>
-            <a href="#" aria-label="YouTube" target="_blank">▶</a>
-            <a href="#" aria-label="Vimeo" target="_blank">v</a>
-            <a href="#" aria-label="Discord" target="_blank">💬</a>
+            <a href="#" aria-label="Facebook" target="_blank"><Facebook size={16} /></a>
+            <a href="#" aria-label="TikTok" target="_blank"><Music size={16} /></a>
+            <a href="#" aria-label="Instagram" target="_blank"><Instagram size={16} /></a>
+            <a href="#" aria-label="Twitter" target="_blank"><Twitter size={16} /></a>
+            <a href="#" aria-label="YouTube" target="_blank"><Youtube size={16} /></a>
+            <a href="#" aria-label="Vimeo" target="_blank"><Video size={16} /></a>
+            <a href="#" aria-label="Discord" target="_blank"><MessageCircle size={16} /></a>
             <a href="#" aria-label="RSS" target="_blank"><Rss size={16} /></a>
             <a href="#" aria-label="iFixit Community" target="_blank">i</a>
-            <a href="#" aria-label="E-mail" target="_blank">@</a>
+            <a href="#" aria-label="E-mail" target="_blank"><Mail size={16} /></a>
           </div>
           <div className="ifixit-logo-bottom">
-            <a href="#" aria-label="iFixit"><img src="path/to/your/ifixit-logo-bottom.svg" alt="iFixit Logo" /></a>
+            <a href="#" aria-label="iFixit">
+              <img src={logo} alt="iFixit Logo" />
+            </a>
             <p>Repair is noble</p>
           </div>
           <div className="copyright">

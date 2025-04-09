@@ -113,6 +113,7 @@
     gap: 4px;
     padding-left: 30px;
     white-space: nowrap;
+    font-weight: bold;
   }
   
   .dropdown-arrow {
@@ -142,19 +143,23 @@
   }
   
   .header-icons {
+    margin-top: 5px;
     display: flex;
-    gap: 15px;
+    gap: 25px;
     font-size: 1.2em; /* Adjust icon size */
   }
   
   .header-icons a {
-    color: #333;
+    color: #ffffff;
   }
   
   .auth-links {
-      display: flex;
-      gap: 15px;
-      white-space: nowrap;
+    position: absolute;
+    right: 25px;
+    display: flex;
+    gap: 15px;
+    white-space: nowrap;
+    font-weight: 400;
   }
   
   
