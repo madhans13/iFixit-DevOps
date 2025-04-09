@@ -109,7 +109,7 @@ function HomePage() {
           <div className="featured-card">
             <img src={laptop} alt="Quality Parts and Tools" />
             <h3>Quality Parts and Tools</h3>
-            <p>Precision tools and thousands of parts to get the job done right, backed by our Lifetime Guarantee.</p>
+            <p>Precision tools and thousands of parts to get the job done, backed by our Lifetime Guarantee.</p>
             <button className="featured-button" onClick={() => navigate('/store')}>
               Shop our Store
             </button>
