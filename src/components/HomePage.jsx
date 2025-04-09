@@ -1,51 +1,51 @@
 import React from 'react';
-import '../componentStyles/HomePage.css'; // Import the CSS file
-import { Rss, Wrench } from 'lucide-react'; // Import the Wrench icon as well
-import image from '../assets/image.png'
-import laptop from '../assets/laptop.png'
-import community from '../assets/community.png'
+import '../componentStyles/HomePage.css';
+import { Rss, Wrench } from 'lucide-react';
+import image from '../assets/image.png';
+import laptop from '../assets/laptop.png';
+import community from '../assets/community.png';
+import { useNavigate, Link } from 'react-router-dom'; // ✅ import Link
+
 function HomePage() {
+  const navigate = useNavigate();
+
   return (
     <div className="homepage">
       {/* --- Top Header --- */}
       <header className="main-header">
         <div className="header-content">
           <div className="header-left">
-            {/* Replace with actual logo */}
-            <a href="#" className="logo-link">
-              <Wrench size={30} color="#0071CE" /> {/* Using the Wrench icon */}
-              {/* You can add text next to the icon if needed */}
-              {/* <span className="logo-text">iFixit</span> */}
-            </a>
+            <Link to="/" className="logo-link">
+              <Wrench size={30} color="#0071CE" />
+            </Link>
             <nav className="main-nav">
               <ul>
-                <li><a href="#">Fix Your Stuff</a></li>
-                <li><a href="#">Community</a></li>
-                <li><a href="#">Store</a></li>
+                <li><Link to="/fix-your-stuff">Fix Your Stuff</Link></li>
+                <li><Link to="/community">Community</Link></li>
+                <li><Link to="/store">Store</Link></li>
               </ul>
             </nav>
             <div className="currency-selector">
-              <span>USD</span> {/* Simple text, could be a dropdown */}
+              <span>USD</span>
               <span className="dropdown-arrow">▼</span>
             </div>
           </div>
           <div className="header-right">
             <div className="search-bar-header">
-              <span className="search-icon">Q</span> {/* Placeholder icon */}
+              <span className="search-icon">Q</span>
               <input type="text" placeholder="Search" />
             </div>
             <div className="header-icons">
-              {/* Placeholder icons */}
-              <a href="#" aria-label="Cart">🛒</a>
-              <a href="#" aria-label="Account">👤</a>
+              <Link to="/cart" aria-label="Cart">🛒</Link>
+              <Link to="/account" aria-label="Account">👤</Link>
             </div>
             <div className="language-selector">
-              <span>EN</span> {/* Simple text, could be a dropdown */}
+              <span>EN</span>
               <span className="dropdown-arrow">▼</span>
             </div>
             <div className="auth-links">
-              <a href="#">Join</a>
-              <a href="#">Log In</a>
+              <Link to="/join">Join</Link>
+              <Link to="/login">Log In</Link>
             </div>
           </div>
         </div>
@@ -61,12 +61,11 @@ function HomePage() {
         <div className="hero-content">
           <h1>Explore a World of Repair</h1>
           <div className="search-bar-hero">
-             <span className="search-icon">Q</span> {/* Placeholder icon */}
-             <input type="text" placeholder='Try "Moto G5 Plus screen"' />
+            <span className="search-icon">Q</span>
+            <input type="text" placeholder='Try "Moto G5 Plus screen"' />
           </div>
           <div className="separator">or</div>
           <button className="find-device-button">
-            {/* Placeholder icon - replace with actual icon if needed */}
             <span className="button-icon">🛠️</span>
             Find Your Device
           </button>
@@ -79,26 +78,32 @@ function HomePage() {
         <p>Get the instructions you need with quality repair parts and tools and the expertise of a robust community.</p>
       </section>
 
-      {/* --- New Section from the Image --- */}
+      {/* --- Featured Section --- */}
       <section className="featured-info-section">
         <div className="featured-cards-container">
           <div className="featured-card">
-            <img src={image} alt="Step-by-Step Guides" /> {/* Replace with actual image path */}
+            <img src={image} alt="Step-by-Step Guides" />
             <h3>Step-by-Step Guides</h3>
             <p>Learn how to fix anything with simple, easy-to-follow instructions created by real fixers.</p>
-            <button className="featured-button">Find a Guide</button>
+            <button className="featured-button" onClick={() => navigate('/guide')}>
+              Find a Guide
+            </button>
           </div>
           <div className="featured-card">
-            <img src={laptop} alt="Quality Parts and Tools" /> {/* Replace with actual image path */}
+            <img src={laptop} alt="Quality Parts and Tools" />
             <h3>Quality Parts and Tools</h3>
             <p>Precision tools and thousands of parts to get the job done right, backed by our Lifetime Guarantee.</p>
-            <button className="featured-button">Shop our Store</button>
+            <button className="featured-button" onClick={() => navigate('/store')}>
+              Shop our Store
+            </button>
           </div>
           <div className="featured-card">
-            <img src={community} alt="A Community of Fixers" /> {/* Replace with actual image path */}
+            <img src={community} alt="A Community of Fixers" />
             <h3>A Community of Fixers</h3>
             <p>No one knows how to fix everything, but everyone knows how to fix something.</p>
-            <button className="featured-button">Fix the World</button>
+            <button className="featured-button" onClick={() => navigate('/community')}>
+              Fix the World
+            </button>
           </div>
         </div>
         <div className="stats-container">
@@ -172,16 +177,16 @@ function HomePage() {
             <a href="#">Help translate <span aria-label="globe icon">🌐</span></a>
           </div>
           <div className="social-links">
-            <a href="#" aria-label="Facebook" target="_blank" rel="noopener noreferrer">f</a>
-            <a href="#" aria-label="TikTok" target="_blank" rel="noopener noreferrer">♪</a>
-            <a href="#" aria-label="Instagram" target="_blank" rel="noopener noreferrer">X</a>
-            <a href="#" aria-label="Twitter" target="_blank" rel="noopener noreferrer">t</a>
-            <a href="#" aria-label="YouTube" target="_blank" rel="noopener noreferrer">▶</a>
-            <a href="#" aria-label="Vimeo" target="_blank" rel="noopener noreferrer">v</a>
-            <a href="#" aria-label="Discord" target="_blank" rel="noopener noreferrer">💬</a>
-            <a href="#" aria-label="RSS" target="_blank" rel="noopener noreferrer"><Rss size={16} /></a> {/* Using the Rss icon */}
-            <a href="#" aria-label="iFixit Community" target="_blank" rel="noopener noreferrer">i</a>
-            <a href="#" aria-label="E-mail" target="_blank" rel="noopener noreferrer">@</a>
+            <a href="#" aria-label="Facebook" target="_blank">f</a>
+            <a href="#" aria-label="TikTok" target="_blank">♪</a>
+            <a href="#" aria-label="Instagram" target="_blank">X</a>
+            <a href="#" aria-label="Twitter" target="_blank">t</a>
+            <a href="#" aria-label="YouTube" target="_blank">▶</a>
+            <a href="#" aria-label="Vimeo" target="_blank">v</a>
+            <a href="#" aria-label="Discord" target="_blank">💬</a>
+            <a href="#" aria-label="RSS" target="_blank"><Rss size={16} /></a>
+            <a href="#" aria-label="iFixit Community" target="_blank">i</a>
+            <a href="#" aria-label="E-mail" target="_blank">@</a>
           </div>
           <div className="ifixit-logo-bottom">
             <a href="#" aria-label="iFixit"><img src="path/to/your/ifixit-logo-bottom.svg" alt="iFixit Logo" /></a>
