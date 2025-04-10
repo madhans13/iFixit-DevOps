@@ -29,45 +29,7 @@ function HomePage() {
   return (
     <div className="homepage">
       {/* --- Top Header --- */}
-      <header className="main-header">
-        <div className="header-content">
-          <div className="header-left">
-            <div className="logo">
-              <img src={logo} alt="Logo" />
-            </div>
-            <nav className="main-nav">
-              <ul>
-                <li><Link to="/fix-your-stuff">Fix Your Stuff</Link></li>
-                <li><Link to="/community">Community</Link></li>
-                <li><Link to="/store">Store</Link></li>
-              </ul>
-            </nav>
-            <div className="currency-selector">
-              <span>USD</span>
-              <span className="dropdown-arrow">▼</span>
-            </div>
-          </div>
-          <div className="header-right">
-            <div className="search-bar-header">
-              <Search size={16} className="search-icon" />
-              <input type="text" placeholder="Search" />
-            </div>
-            <div className="header-icons">
-              <Link to="/cart" aria-label="Cart"><ShoppingCart size={18} /></Link>
-              <Link to="/account" aria-label="Account"><User size={18} /></Link>
-            </div>
-            <div className="language-selector">
-              <span>EN</span>
-              <span className="dropdown-arrow">▼</span>
-            </div>
-            <div className="auth-links">
-              <Link to="/join">Join</Link>
-              <Link to="/login">Log In</Link>
-            </div>
-          </div>
-        </div>
-      </header>
-
+      
       {/* --- Blue Banner --- */}
       <div className="shipping-banner">
         Welcome to world of repair
@@ -142,81 +104,6 @@ function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* --- Footer --- */}
-      <footer className="main-footer">
-        <div className="footer-content">
-          <div className="footer-section">
-            <h3>iFixit</h3>
-            <ul>
-              <li><a href="#">About Us</a></li>
-              <li><a href="#">Customer Support</a></li>
-              <li><a href="#">Discuss iFixit</a></li>
-              <li><a href="#">Careers</a></li>
-              <li><a href="#">Newsletter</a></li>
-              <li><a href="#">API</a></li>
-            </ul>
-          </div>
-          <div className="footer-section">
-            <h3>Resources</h3>
-            <ul>
-              <li><a href="#">Press</a></li>
-              <li><a href="#">News</a></li>
-              <li><a href="#">Participate</a></li>
-              <li><a href="#">Pro Wholesale</a></li>
-              <li><a href="#">Retail Locator</a></li>
-              <li><a href="#">For Manufacturers</a></li>
-            </ul>
-          </div>
-          <div className="footer-section">
-            <h3>Legal</h3>
-            <ul>
-              <li><a href="#">Accessibility</a></li>
-              <li><a href="#">Privacy</a></li>
-              <li><a href="#">Terms</a></li>
-              <li><a href="#">Cookie Consent</a></li>
-            </ul>
-          </div>
-          <div className="footer-section stay-in-loop">
-            <h3>Stay in the loop</h3>
-            <p>Learn something new every month!</p>
-            <div className="subscribe-form">
-              <input type="email" placeholder="Enter your email" />
-              <button type="submit">Subscribe</button>
-            </div>
-            <label>
-              <input type="checkbox" /> Let me read it first!
-            </label>
-          </div>
-        </div>
-
-        <div className="footer-bottom">
-          <div className="help-translate">
-            <a href="#">Help translate <Globe size={14} /></a>
-          </div>
-          <div className="social-links">
-            <a href="#" aria-label="Facebook" target="_blank"><Facebook size={16} /></a>
-            <a href="#" aria-label="TikTok" target="_blank"><Music size={16} /></a>
-            <a href="#" aria-label="Instagram" target="_blank"><Instagram size={16} /></a>
-            <a href="#" aria-label="Twitter" target="_blank"><Twitter size={16} /></a>
-            <a href="#" aria-label="YouTube" target="_blank"><Youtube size={16} /></a>
-            <a href="#" aria-label="Vimeo" target="_blank"><Video size={16} /></a>
-            <a href="#" aria-label="Discord" target="_blank"><MessageCircle size={16} /></a>
-            <a href="#" aria-label="RSS" target="_blank"><Rss size={16} /></a>
-            <a href="#" aria-label="iFixit Community" target="_blank">i</a>
-            <a href="#" aria-label="E-mail" target="_blank"><Mail size={16} /></a>
-          </div>
-          <div className="ifixit-logo-bottom">
-            <a href="#" aria-label="iFixit">
-              <img src={logo} alt="iFixit Logo" />
-            </a>
-            <p>Repair is noble</p>
-          </div>
-          <div className="copyright">
-            © 2025 iFixit — Licensed under Creative Commons
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

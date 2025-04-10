@@ -1,0 +1,160 @@
+.repair-guides-container {
+  padding: 20px;
+  font-family: 'Segoe UI', sans-serif;
+  color: #222;
+}
+
+.main-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.banner {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 8px;
+  margin-bottom: 30px;
+}
+
+.banner-image {
+  width: 100%;
+  border-radius: 8px;
+  object-fit: cover;
+  height: 300px;
+}
+
+.banner-text {
+  position: absolute;
+  top: 20%;
+  right: 5%;
+  color: white;
+  text-align: right;
+  max-width: 300px;
+  
+}
+
+.banner-text h2 {
+  font-size: 1.8rem;
+  margin-bottom: 5px;
+}
+.you{
+  display: block;
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+.banner-buttons {
+  position: absolute;
+  top: 10%;
+  right: 5%;
+}
+
+.learn-more,
+.create-guide {
+  padding: 10px 15px;
+  margin-left: 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.learn-more {
+  background: white;
+  color: black;
+}
+
+.create-guide {
+  background: #0071ce;
+  color: white;
+}
+
+.divider {
+  border: 0;
+  height: 1px;
+  background-color: #ccc;
+  margin: 30px 0;
+}
+
+.sub-heading {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.category-grid-top,
+.category-grid-all {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.category-card-top,
+.category-card-all {
+  background-color: #f1f3f5;
+  padding: 30px 40px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 500;
+  width: 180px;
+  transition: 0.2s;
+  cursor: pointer;
+}
+
+.category-card-top:hover,
+.category-card-all:hover {
+  background-color: #dfe6ed;
+}
+.switch-savers-section {
+  padding: 20px 40px;
+}
+
+.switch-savers-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.switch-savers-header h2 {
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.view-all {
+  text-decoration: none;
+  color: #000;
+  font-weight: bold;
+}
+
+.switch-savers-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.issue-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  overflow: hidden;
+  text-align: center;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.issue-card img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.issue-title {
+  background-color: #f2f2f2;
+  padding: 10px;
+  font-size: 0.95rem;
+}
