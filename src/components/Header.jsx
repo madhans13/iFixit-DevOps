@@ -23,9 +23,7 @@ const Header = () => {
               <li><Link to="/store">Store</Link></li>
             </ul>
           </nav>
-          <div className="currency-selector">
-            <span>USD</span><span className="dropdown-arrow">▼</span>
-          </div>
+          
         </div>
         <div className="header-right">
           <div className="search-bar-header">
@@ -36,9 +34,7 @@ const Header = () => {
             <Link to="/cart"><ShoppingCart size={18} /></Link>
             <Link to="/account"><User size={18} /></Link>
           </div>
-          <div className="language-selector">
-            <span>EN</span><span className="dropdown-arrow">▼</span>
-          </div>
+          
           <div className="auth-links">
             <Link to="/join">Join</Link>
             <Link to="/login">Log In</Link>
