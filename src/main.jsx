@@ -6,7 +6,7 @@ import Layout from './components/Layout';
 import HomePage from './components/HomePage';
 import GuidePage from './components/GuideRepair';
 import FixYourStuffPage from './components/GuideRepair';
-import CommunityPage from './pages/CommunityPage';
+import CommunityPage from './components/Community';
 import StorePage from './components/ShopStore';
 import JoinPage from './pages/JoinPage';
 import LoginPage from './pages/LoginPage';
