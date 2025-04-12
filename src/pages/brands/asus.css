@@ -1,0 +1,72 @@
+.brand-page-container {
+    display: flex;
+    font-family: "Segoe UI", sans-serif;
+  }
+  
+  .sidebar {
+    width: 220px;
+    padding: 20px;
+    background: #f5f7f8;
+    height: 100vh;
+  }
+  
+  .sidebar h2 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+  
+  .sidebar ul {
+    list-style: none;
+    padding-left: 0;
+    font-size: 14px;
+    color: #333;
+  }
+  
+  .content {
+    flex: 1;
+    padding: 30px;
+  }
+  
+  .brand-header {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+  
+  .brand-logo {
+    width: 150px;
+  }
+  
+  .create-guide-btn {
+    background-color: #0071ce;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    margin-top: 10px;
+    cursor: pointer;
+  }
+  
+  .category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 25px;
+  }
+  
+  .category-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+  }
+  .category-image {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-bottom: 10px;
+  }
+  
+  
