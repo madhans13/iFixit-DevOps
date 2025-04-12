@@ -1,0 +1,104 @@
+/* Laptop.css */
+
+.laptop-repair-container {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.breadcrumb {
+  color: #6a737c;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+.laptop-title {
+  font-size: 34px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #1a1a1a;
+}
+
+.laptop-description {
+  font-size: 18px;
+  color: #3c3c3c;
+  margin-bottom: 5px;
+  max-width: 800px;
+}
+
+.author {
+  font-size: 14px;
+  margin-bottom: 20px;
+  color: #3c3c3c;
+}
+
+.author a {
+  color: #0071ce;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.create-guide-btn {
+  background-color: #0071ce;
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  font-size: 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 30px;
+  transition: background-color 0.3s ease;
+}
+
+.create-guide-btn:hover {
+  background-color: #005fa3;
+}
+
+.category-count {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.brand-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 130px;
+}
+
+.brand-card {
+  background: linear-gradient(135deg, #e9f3ff, #f5f7fa);
+  border: 1px solid #cbd6e2;
+  border-radius: 12px;
+  padding: 20px;
+  height: 200px;
+  width: 300px;
+  text-align: center;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.brand-card:hover {
+  box-shadow: 0 8px 20px rgba(0, 102, 204, 0.2);
+  transform: translateY(-5px) scale(1.03);
+  background: linear-gradient(135deg, #dbeeff, #f0f4f8);
+}
+
+.brand-card p {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2d3d;
+}
+
+
+.brand-card img {
+  width: 100px;
+  height: auto;
+  margin-top: 20px;
+}
+
+.brand-card p {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+}
