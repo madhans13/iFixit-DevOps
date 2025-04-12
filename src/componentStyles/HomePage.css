@@ -80,7 +80,7 @@
     display: flex;
     align-items: center;
     gap: 15px; /* Space between items */
-    flex-wrap: wrap; /* Allow inner items to wrap if needed */
+    flex-wrap: wrap; 
   }
   
   .logo {
