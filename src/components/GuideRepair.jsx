@@ -7,9 +7,7 @@ import laptopImg from '../assets/laptop.png';
 import tabletImg from '../assets/image.png';
 
 const categoriesTop = [
-  { name: 'Mac', path: '/repair/mac' },
   { name: 'Phone', path: '/repair/phone' },
-  { name: 'Tablet', path: '/repair/tablet' },
   { name: 'PC Laptop', path: '/repair/pclaptop' }
 ];
 

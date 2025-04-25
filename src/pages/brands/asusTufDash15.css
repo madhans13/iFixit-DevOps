@@ -197,7 +197,7 @@
 .guides-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 80px;
+  gap: 30px;
   margin-bottom: 30px;
 }
 
@@ -213,6 +213,7 @@
   transition: transform 0.2s;
   cursor: pointer;
   padding: 10px;
+  max-width: 800px;
 }
 
 .guide-card:hover {
@@ -236,7 +237,7 @@
 }
 
 .guide-title {
-  flex-grow: 1;
+  flex-grow: 0;
   font-size: 16px;
   font-weight: 500;
   padding-right: 15px;

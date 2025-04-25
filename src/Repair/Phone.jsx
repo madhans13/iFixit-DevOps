@@ -17,7 +17,7 @@ const brands = [
 const Laptop = () => {
   return (
     <div className="laptop-repair-container">
-      <div className="breadcrumb">Device &gt; PC &gt; Laptop</div>
+      <div className="breadcrumb">Device &gt; Phone &gt; </div>
 
       <h1 className="laptop-title">PC Laptop Repair</h1>
       <p className="laptop-description">

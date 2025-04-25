@@ -27,10 +27,7 @@ const AsusTufDashF15 = () => {
         {/* Breadcrumb Navigation */}
         <div className="breadcrumb">
           <span>Device</span> &gt; <span>PC</span> <span>Laptop</span> <span>Asus Laptop</span> &gt; <span>Asus TUF Laptop</span> &gt; <span className="current">ASUS TUF Dash F15</span>
-          <div className="edit-options">
-            <button className="edit-btn">Edit</button>
-            <button className="options-btn">Options</button>
-          </div>
+          
         </div>
 
         {/* Header with Device Info */}

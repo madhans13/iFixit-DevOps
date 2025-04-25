@@ -19,6 +19,7 @@ import LaptopPage from './Repair/Laptop';
 import AsusPage from './pages/brands/asus';
 import AsusTufDash15 from './pages/brands/AsusTufDash15';
 import BatteryReplacement from './pages/repair/BatteryReplacement';
+import PhoneRepairPage from './Repair/phone'; // Add this
 
 // Styles
 import './componentStyles/HomePage.css';
@@ -41,6 +42,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 
           {/* Repair Section */}
           <Route path="repair/pclaptop" element={<LaptopPage />} />
+          <Route path="repair/phone" element={<PhoneRepairPage />} />
           <Route path="repair/pclaptop/asus" element={<AsusPage />} />
           <Route path="repair/pclaptop/asus/tuf-dash-f15" element={<AsusTufDash15 />} />
           <Route path="repair/pclaptop/asus/tuf-dash-f15/battery-replacement" element={<BatteryReplacement />} />
