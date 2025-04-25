@@ -19,24 +19,7 @@ const AsusPage = () => {
 
   return (
     <div className="brand-page-container">
-      <aside className="sidebar">
-        <h2>ASUS LAPTOP</h2>
-        <ul>
-          <li>36 Categories</li>
-          <li>Guides</li>
-          <li>Replacement</li>
-          <li>Troubleshooting</li>
-          <li>Popular Forum Questions</li>
-          <li>Parts and Tools</li>
-          <li>Details</li>
-          <ul>
-            <li>ASUS Chromebooks</li>
-            <li>Background</li>
-            <li>Identification</li>
-            <li>Additional Information</li>
-          </ul>
-        </ul>
-      </aside>
+      
 
       <main className="content">
         <div className="brand-header">
