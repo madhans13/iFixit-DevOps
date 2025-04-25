@@ -1,3 +1,4 @@
+// main.jsx
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
@@ -21,6 +22,12 @@ import AsusPage from './pages/brands/asus';
 import AsusTufDash15 from './pages/brands/AsusTufDash15';
 import BatteryReplacement from './pages/repair/BatteryReplacement';
 import PhoneRepairPage from './Repair/phone';
+// Import the OnePlus brand page component
+import OnePlusPage from './pages/brands/oneplus';
+// Import the OnePlus 9 page component
+import OnePlus9Page from './pages/brands/oneplus9';
+// Import the new Phone Battery Replacement Page
+import PhoneBatteryReplacementPage from './pages/repair/PhoneBatteryReplacementPage';
 
 // Styles
 import './componentStyles/HomePage.css';
@@ -44,10 +51,16 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 
           {/* Repair Section */}
           <Route path="repair/pclaptop" element={<LaptopPage />} />
-          <Route path="repair/phone" element={<PhoneRepairPage />} />
           <Route path="repair/pclaptop/asus" element={<AsusPage />} />
           <Route path="repair/pclaptop/asus/tuf-dash-f15" element={<AsusTufDash15 />} />
-          <Route path="repair/pclaptop/asus/tuf-dash-f15/battery-replacement" element={<BatteryReplacement />} />
+          <Route path="repair/pclaptop/asus/tuf-dash-f15/battery-replacement" element={<BatteryReplacement />} /> 
+          <Route path="repair/phone" element={<PhoneRepairPage />} />
+          {/* Route for the main OnePlus page */}
+          <Route path="repair/phone/oneplus" element={<OnePlusPage />} />
+          {/* Routes for the individual OnePlus phone pages */}
+          <Route path="repair/phone/oneplus/oneplus9" element={<OnePlus9Page />} />
+          {/* Route for the new Phone Battery Replacement Page */}
+          <Route path="repair/phone/oneplus/oneplus9/battery-replacement" element={<PhoneBatteryReplacementPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

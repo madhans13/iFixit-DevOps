@@ -1,0 +1,465 @@
+.asus-container {
+  display: flex;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  color: #333;
+  background-color: #f8f9fa;
+}
+
+/* Sidebar Styles */
+.sidebar {
+  width: 250px;
+  background-color: #fff;
+  border-right: 1px solid #e0e0e0;
+  padding: 20px 0;
+  min-height: 100vh;
+  position: sticky;
+  top: 0;
+}
+
+.sidebar-title {
+  font-weight: 600;
+  padding: 10px 20px;
+  font-size: 18px;
+  color: #555;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 15px;
+}
+
+.sidebar-section {
+  margin-bottom: 20px;
+}
+
+.sidebar-header {
+  font-weight: 600;
+  padding: 8px 20px;
+  color: #333;
+  cursor: pointer;
+}
+
+.sidebar-header.active {
+  background-color: #0057b7;
+  color: white;
+}
+
+.sidebar-item {
+  padding: 8px 30px;
+  color: #666;
+  cursor: pointer;
+}
+
+.sidebar-item:hover {
+  background-color: #f0f0f0;
+}
+
+/* Main Content Styles */
+.main-content {
+  flex: 1;
+  padding: 20px;
+  max-width: 1200px;
+}
+
+/* Breadcrumb Styles */
+.breadcrumb {
+
+  padding: 0px 0;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #777;
+  border-bottom: 1px solid #eee;
+  justify-content: space-between;
+}
+
+.breadcrumb span {
+
+}
+
+.breadcrumb span.current {
+  font-weight: 600;
+  color: #0057b7;
+}
+
+.edit-options {
+  display: flex;
+  gap: 10px;
+}
+
+.edit-btn, .options-btn {
+  background: none;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 5px 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.edit-btn:hover, .options-btn:hover {
+  background-color: #f0f0f0;
+}
+
+/* Header Device Info Styles */
+.device-header {
+  display: flex;
+  margin-bottom: 30px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  padding: 20px;
+}
+
+.device-image {
+  width: 250px;
+  margin-right: 30px;
+}
+
+.device-image img {
+  width: 100%;
+  border-radius: 6px;
+}
+
+.device-info {
+  flex: 1;
+}
+
+.device-info h1 {
+  font-size: 28px;
+  margin-bottom: 15px;
+  color: #222;
+}
+
+.device-info p {
+  margin-bottom: 10px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.author-link {
+  color: #0057b7;
+  text-decoration: none;
+}
+
+.author-link:hover {
+  text-decoration: underline;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.create-guide-btn, .have-this-btn {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+}
+
+.create-guide-btn {
+  background-color: #0057b7;
+  color: white;
+}
+
+.have-this-btn {
+  background-color: #fff;
+  color: #0057b7;
+  border: 1px solid #0057b7;
+}
+
+.guide-icon, .check-icon {
+  margin-right: 8px;
+}
+
+/* Section Header Styles */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 30px 0 15px;
+}
+
+.section-header h2 {
+  font-size: 24px;
+  color: #333;
+  font-weight: 600;
+}
+
+.subsection-header h3 {
+  font-size: 20px;
+  color: #444;
+  margin-bottom: 15px;
+}
+
+/* Guides Grid Styles */
+.guides-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.guide-card {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s;
+  cursor: pointer;
+  padding: 10px;
+  max-width: 800px;
+}
+
+.guide-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+.guide-image {
+  flex-shrink: 0;
+  width: 150px; /* Adjust as needed */
+  height: 70px; /* Adjust as needed */
+  overflow: hidden;
+  border-radius: 5px;
+  
+}
+
+.guide-image img {
+  width: 100%;
+  height: 100%;
+  object-fit:cover;
+}
+
+.guide-title {
+  flex-grow: 0;
+  font-size: 16px;
+  font-weight: 500;
+  padding-right: 15px;
+  text-align: left;
+}
+
+
+/* Forum Questions Styles */
+.forum-header {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.ask-question-btn {
+  background-color: #fff;
+  border: 1px solid #0057b7;
+  color: #0057b7;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.ask-question-btn:hover {
+  background-color: #f0f7ff;
+}
+
+.forum-questions {
+  margin-bottom: 30px;
+}
+
+.forum-question {
+  display: flex;
+  background-color: #fff;
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.question-stats {
+  width: 100px;
+  margin-right: 15px;
+}
+
+.answers, .score {
+  padding: 8px;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  text-align: center;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.question-content {
+  flex: 1;
+}
+
+.question-title {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.question-device {
+  font-size: 13px;
+  color: #777;
+}
+
+/* Tools Styles */
+.tools-description {
+  margin-bottom: 20px;
+  font-size: 15px;
+  color: #555;
+}
+
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.tool-card {
+  display: flex;
+  background-color: #fff;
+  border-radius: 6px;
+  padding: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.tool-icon {
+  width: 40px;
+  height: 40px;
+  margin-right: 15px;
+}
+
+.tool-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.tool-info {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tool-name {
+  font-size: 15px;
+}
+
+.view-btn {
+  padding: 5px 12px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.view-btn:hover {
+  background-color: #f5f5f5;
+}
+
+/* Content Sections */
+.background-content,
+.identification-content {
+  background-color: #fff;
+  border-radius: 6px;
+  padding: 20px;
+  margin-bottom: 30px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+/* Specifications Styles */
+.specifications-content {
+  background-color: #fff;
+  border-radius: 6px;
+  padding: 20px;
+  margin-bottom: 30px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.spec-section {
+  margin-bottom: 20px;
+}
+
+.spec-section h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #444;
+}
+
+.spec-section ul {
+  padding-left: 20px;
+}
+
+.spec-section li {
+  margin-bottom: 8px;
+  font-size: 15px;
+}
+
+/* Author Section */
+.author-section {
+  display: flex;
+  margin-bottom: 30px;
+}
+
+.author-info {
+  flex: 1;
+  background-color: #f0f7ff;
+  border-radius: 6px 0 0 6px;
+  padding: 20px;
+}
+
+.team-info {
+  flex: 1;
+  background-color: #444;
+  color: white;
+  border-radius: 0 6px 6px 0;
+  padding: 20px;
+}
+
+.author-info h3,
+.team-info h3 {
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+.author-details,
+.team-details {
+  display: flex;
+}
+
+.author-image,
+.team-logo {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin-right: 15px;
+}
+
+.author-bio h4,
+.team-stats h4 {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.author-bio p,
+.team-stats p,
+.author-badges p {
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.author-badges {
+  margin-left: auto;
+  text-align: right;
+}
