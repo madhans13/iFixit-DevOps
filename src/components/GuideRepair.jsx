@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom'; // ✅ React Router Link
+import { Link, useNavigate } from 'react-router-dom'; // ✅ Added useNavigate
 import '../componentStyles/GuideRepair.css';
 
 import phoneImg from '../assets/image.png';
@@ -23,13 +23,17 @@ const switchIssues = [
 ];
 
 const GuideRepair = () => {
+  const navigate = useNavigate(); // ✅ Hook for navigation
+
   return (
     <div className="repair-guides-container">
       <h1 className="main-title">Repair Guides</h1>
 
       <div className="banner-buttons">
         <button className="learn-more">Learn More</button>
-        <button className="create-guide">Create a Guide</button>
+        <button className="create-guide" onClick={() => navigate('/create-guide')}>
+          Create a Guide
+        </button>
       </div>
 
       <div className="banner">

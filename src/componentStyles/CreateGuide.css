@@ -1,0 +1,228 @@
+/* Scope only to CreateGuide page */
+.page-container {
+    display: flex;
+    width: 100%;
+    gap: 40px;
+    margin: 0;
+    padding: 0 20px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  }
+  
+  .guide-form-container {
+    flex: 2;
+    padding: 20px 0;
+  }
+  
+  .side-panel {
+    flex: 1;
+    padding: 20px 0;
+  }
+  
+  .create-guide-title {
+    font-size: 28px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  /* Tabs */
+  .tabs {
+    display: flex;
+    margin-bottom: 20px;
+  }
+  
+  .tab {
+    padding: 8px 16px;
+    margin-right: 10px;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .tab.active {
+    background-color: #fff;
+    border-color: #999;
+    font-weight: bold;
+  }
+  
+  /* Form */
+  .form-section {
+    border: 2px dashed rgba(0, 0, 0, 0.5); /* Dashed border with a thicker line */
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 20px;
+   
+  }
+  
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+    font-size: 16px;
+    color: #333;
+  }
+  
+  .info-icon {
+    color: #999;
+    cursor: help;
+  }
+  
+  .form-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+  }
+  
+  .device-input-container {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .device-input {
+    flex-grow: 1;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+  }
+  
+  .add-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    width: 32px;
+    height: 32px;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  
+  .show-more-container {
+    text-align: center;
+    margin-top: 10px;
+  }
+  
+  .show-more-button {
+    color: #007bff;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .button-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+  }
+  
+  .save-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 20px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .language-selector {
+    text-align: right;
+    margin-bottom: 20px;
+    font-weight: bold;
+    color: #007bff;
+  }
+  
+  /* Guide card */
+  .guide-card {
+    width: 100%;
+    border-radius: 4px;
+    overflow: hidden;
+    height: auto; /* changed to auto for content to adjust */
+    background: #f9f9f9;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+    padding-bottom: 20px;
+  }
+  
+  .guide-card-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .guide-image-container {
+    width: 100%;
+    height: auto;
+  }
+  
+  .create-guide-image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+  
+  .guide-text {
+    width: 90%;
+    text-align: center;
+    margin-top: 10px;
+  }
+  
+  .guide-text-heading {
+    font-weight: bold;
+    font-size: 16px;
+    margin: 10px 0;
+  }
+  
+  .guide-text-paragraph {
+    font-size: 13px;
+    color: #666;
+    margin: 5px 0;
+  }
+  
+  .guide-subheading {
+    font-size: 13px;
+    font-weight: bold;
+    margin: 10px 0 5px;
+  }
+  
+  .guide-link {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 13px;
+    margin-bottom: 8px;
+    display: inline-block;
+  }
+  .tab.disabled {
+    background-color: #d3d3d3; /* Light grey */
+    color: #b0b0b0; /* Darker grey for text */
+    cursor: not-allowed;
+  }
+  
+  .tab.active {
+    background-color: #4caf50; /* Green or any other active color */
+    color: white;
+  }
+  
+  .tab {
+    padding: 10px;
+    margin: 5px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+  }
+  
+  .tab:hover {
+    background-color: #ccc; /* Light grey on hover */
+  }
+  

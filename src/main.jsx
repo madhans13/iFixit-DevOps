@@ -13,13 +13,14 @@ import JoinPage from './pages/JoinPage';
 import LoginPage from './pages/LoginPage';
 import CartPage from './pages/CartPage';
 import AccountPage from './pages/AccountPage';
+import CreateGuidePage from './pages/CreateGuide'; // ✅ New guide creation page
 
 // Repair pages
 import LaptopPage from './Repair/Laptop';
 import AsusPage from './pages/brands/asus';
 import AsusTufDash15 from './pages/brands/AsusTufDash15';
 import BatteryReplacement from './pages/repair/BatteryReplacement';
-import PhoneRepairPage from './Repair/phone'; // Add this
+import PhoneRepairPage from './Repair/phone';
 
 // Styles
 import './componentStyles/HomePage.css';
@@ -39,6 +40,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <Route path="login" element={<LoginPage />} />
           <Route path="cart" element={<CartPage />} />
           <Route path="account" element={<AccountPage />} />
+          <Route path="create-guide" element={<CreateGuidePage />} /> {/* ✅ NEW ROUTE */}
 
           {/* Repair Section */}
           <Route path="repair/pclaptop" element={<LaptopPage />} />
