@@ -35,7 +35,7 @@ const CreateGuide = () => {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => { // Make handleSubmit async to use await
     const formData = {
       guideType,
       device,
@@ -45,14 +45,39 @@ const CreateGuide = () => {
     };
     console.log('Submitting form:', formData);
     // Later you will replace this console.log with API call to save in database
-    alert('Guide Submitted Successfully!');
-    // Optional: Clear form after submission
-    setGuideType('Technique');
-    setDevice('');
-    setTitle('');
-    setDetails('');
-    setSteps('');
-    setActiveTab('Introduction');
+    try {
+        //  Replace the following alert with your actual API call.
+        //  The following fetch is just an example
+        const response = await fetch('http://localhost:5000/api/guides', { //  Use your API endpoint
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+        });
+
+        if (!response.ok) {
+            //  Handle HTTP errors (e.g., 400, 500)
+            const errorText = await response.text(); // Get error message
+            throw new Error(`Failed to submit guide: ${response.status} - ${errorText}`);
+        }
+
+        const savedGuideData = await response.json(); // Parse JSON response
+        console.log('Guide saved successfully:', savedGuideData);
+        alert('Guide Submitted Successfully!');
+
+        //  Clear form after successful submission
+        setGuideType('Technique');
+        setDevice('');
+        setTitle('');
+        setDetails('');
+        setSteps('');
+        setActiveTab('Introduction');
+
+    } catch (error) {
+        console.error('Error submitting guide:', error);
+        alert('Failed to submit guide.  Check the console for error details.');
+    }
   };
 
   const handleTabChange = (tab) => {

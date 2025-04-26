@@ -34,7 +34,7 @@ const Footer = () => {
           <p>Repair is noble</p>
         </div>
         <div className="copyright">
-          © 2025 iFixit — Licensed under Creative Commons
+          © 2025 MDM — Licensed under Creative Commons
         </div>
       </div>
     </footer>

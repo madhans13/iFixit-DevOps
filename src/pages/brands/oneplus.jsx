@@ -1,5 +1,4 @@
 import React from 'react';
-import '../../componentStyles/oneplus.css';
 import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/onelogo.png';
 import one9 from '../../assets/one9.png';
@@ -17,9 +16,13 @@ const categories = [
 const OnePlusPage = () => {
   const navigate = useNavigate();
 
+    const handleCreateGuideClick = () => {
+    navigate('/create-guide');
+  };
+
   return (
     <div className="brand-page-container">
-      
+
 
       <main className="content">
         <div className="brand-header">
@@ -27,8 +30,10 @@ const OnePlusPage = () => {
           <div>
             <h1>OnePlus Repair</h1>
             <p>Repair guides and disassembly information for phones manufactured by OnePlus.</p>
-            <p>Author: <a href="#">Walter Galan</a> (and 9 other contributors)</p>
-            <button className="create-guide-btn">+ Create a Guide</button>
+            <p>
+              Author: <a href="#">Walter Galan</a> (and 9 other contributors)
+            </p>
+            <button className="create-guide-btn" onClick={handleCreateGuideClick}>+ Create a Guide</button>
           </div>
         </div>
 
