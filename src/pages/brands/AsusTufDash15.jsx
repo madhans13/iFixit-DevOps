@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import './asusTufDash15.css';
-import { useNavigate, Link } from 'react-router-dom';
 import laptopImage from '../../assets/asus_tuf.jpg';
 import batteryImage from '../../assets/battery.jpg';
 import lowerCaseImage from '../../assets/lowercase.jpg';
@@ -10,17 +10,110 @@ import ifixtPicksIcon from '../../assets/team.png';
 import spudgerIcon from '../../assets/tools2.png';
 import spencerImage from '../../assets/clay.png';
 import ifixtLogo from '../../assets/team.png';
+import os from '../../assets/os_install.webp'
+import drivers from '../../assets/drivers.png'
+import software from '../../assets/software.webp'
+// Mock API functions (replace with your actual API calls)
+const createQuestion = async (questionData) => {
+  // Simulate API call delay
+  await new Promise((resolve) => setTimeout(resolve, 500));
+  // In a real app, you'd send this data to your backend API
+  console.log('Question submitted:', questionData);
+  // Mock successful response
+  return {
+    id: crypto.randomUUID(),
+    ...questionData,
+    answers: 0,
+    score: 0,
+  };
+};
+
+const getQuestions = async () => {
+  // Simulate fetching questions from a database
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  // Mock data (replace with actual data from your database)
+  return [
+    {
+      id: '1',
+      title: 'Display won\'t turn on, battery indicator flashes white.',
+      content: 'My Asus TUF Dash F15 display is not turning on. The battery indicator light is flashing white. I\'ve tried restarting, but it doesn\'t work. Any ideas?',
+      device: 'ASUS TUF Dash F15',
+      answers: 4,
+      score: 2,
+    },
+    {
+      id: '2',
+      title: 'Powers On, No POST, Keyboard flashes, Black Screen',
+      content: 'When I turn on my laptop, the power comes on, but there is no POST. The keyboard flashes, and the screen remains black. What could be the issue?',
+      device: 'ASUS TUF Dash F15',
+      answers: 2,
+      score: 1,
+    },
+    {
+      id: '3',
+      title: 'Screen slowly turns black from the bottom up, like pixels dying',
+      content: 'The screen on my laptop is turning black from the bottom up, as if the pixels are dying. Has anyone seen this before? How can I fix it?',
+      device: 'ASUS TUF Dash F15',
+      answers: 3,
+      score: 0,
+    },
+    {
+      id: '4',
+      title: 'Changing broken screen on a Laptop.',
+      content: 'I need to replace the broken screen on my Laptop. Can anyone guide me through the process?',
+      device: 'ASUS TUF Dash F15',
+      answers: 1,
+      score: 0,
+    },
+  ];
+};
+
+
 
 const AsusTufDashF15 = () => {
   const [activeTab, setActiveTab] = useState('guides');
-  const navigate = useNavigate();
+  const [questions, setQuestions] = useState([]);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [newQuestion, setNewQuestion] = useState({ title: '', content: '', device: 'ASUS TUF Dash F15' });
+  const [isLoading, setIsLoading] = useState(false);
+  const textareaRef = useRef(null);
+
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      const fetchedQuestions = await getQuestions();
+      setQuestions(fetchedQuestions);
+    };
+    fetchQuestions();
+  }, []);
+
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = 'auto';
+      textarea.style.height = `${textarea.scrollHeight}px`;
+    }
+  }, [newQuestion.content]);
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
 
   const handleCreateGuideClick = () => {
-    navigate('/create-guide');
+  };
+
+  const handleAskQuestion = async () => {
+    setIsLoading(true);
+    try {
+      const createdQuestion = await createQuestion(newQuestion);
+      setQuestions([...questions, createdQuestion]);
+      setNewQuestion({ title: '', content: '', device: 'ASUS TUF Dash F15' });
+      setIsDialogOpen(false);
+    } catch (error) {
+      console.error('Failed to create question:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -68,6 +161,7 @@ const AsusTufDashF15 = () => {
           <h2>Guides</h2>
         </div>
 
+        {/* Replacement Guides */}
         <div className="subsection-header">
           <h3>Replacement Guides</h3>
         </div>
@@ -83,70 +177,134 @@ const AsusTufDashF15 = () => {
           </div>
 
           <div className="guide-card">
-            <div className="guide-image">
-              <img src={lowerCaseImage} alt="Lower Case Replacement" />
-            </div>
+            <Link to="/repair/pclaptop/asus/tuf-dash-f15/lower-case-replacement">
+              <div className="guide-image">
+                <img src={lowerCaseImage} alt="Lower Case Replacement" />
+              </div>
+            </Link>
             <div className="guide-title">Lower Case</div>
           </div>
 
           <div className="guide-card">
-            <div className="guide-image">
-              <img src={ssdImage} alt="SSD Replacement" />
-            </div>
+            <Link to="/repair/pclaptop/asus/tuf-dash-f15/ssd-replacement">
+              <div className="guide-image">
+                <img src={ssdImage} alt="SSD Replacement" />
+              </div>
+            </Link>
             <div className="guide-title">SSD</div>
+          </div>
+        </div>
+
+        {/* Software Related Issues */}
+        <div className="subsection-header">
+          <h3>Software Related Issues</h3>
+        </div>
+
+        <div className="guides-grid">
+          <div className="guide-card">
+            <Link to="/repair/pclaptop/asus/tuf-dash-f15/os-installation">
+              <div className="guide-image">
+                <img src={os} alt="OS Install" />
+              </div>
+            </Link>
+            <div className="guide-title">Install Operating System</div>
+          </div>
+
+          <div className="guide-card">
+            <Link to="/repair/pclaptop/asus/tuf-dash-f15/driver-installation">
+              <div className="guide-image">
+                <img src={drivers} alt="Driver Install" />
+              </div>
+            </Link>
+            <div className="guide-title">Install Drivers</div>
+          </div>
+
+          <div className="guide-card">
+            <Link to="/repair/pclaptop/asus/tuf-dash-f15/software-troubleshooting">
+              <div className="guide-image">
+                <img src={software} alt="Troubleshoot Software" />
+              </div>
+            </Link>
+            <div className="guide-title">Software</div>
           </div>
         </div>
 
         {/* Forum Questions Section */}
         <div className="section-header forum-header">
           <h2>Popular Forum Questions</h2>
-          <button className="ask-question-btn">Ask a Question</button>
+          <button className="ask-question-btn" onClick={() => setIsDialogOpen(true)}>Ask a Question</button>
+
+          {isDialogOpen && (
+            <div className="dialog-overlay">
+              <div className="dialog-content">
+                <div className="dialog-header">
+                  <h2 className="dialog-title">Ask a Question</h2>
+                  <p className="dialog-description">
+                    Ask a question about the ASUS TUF Dash F15.
+                  </p>
+                </div>
+                <div className="grid gap-4 py-4">
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <label htmlFor="title" className="text-right dialog-label">
+                      Title
+                    </label>
+                    <input
+                      id="title"
+                      value={newQuestion.title}
+                      onChange={(e) => setNewQuestion({ ...newQuestion, title: e.target.value })}
+                      className="col-span-3 dialog-input"
+                      placeholder="Enter your question title"
+                    />
+                  </div>
+                  <div className="grid grid-cols-4 items-start gap-4">
+                    <label htmlFor="content" className="text-right mt-2 dialog-label">
+                      Content
+                    </label>
+                    <textarea
+                      id="content"
+                      value={newQuestion.content}
+                      onChange={(e) => setNewQuestion({ ...newQuestion, content: e.target.value })}
+                      className="col-span-3 dialog-textarea"
+                      placeholder="Enter the details of your question"
+                      ref={textareaRef}
+                    />
+                  </div>
+                </div>
+                <div className="dialog-footer">
+                  <button
+                    type="button"
+                    onClick={handleAskQuestion}
+                    disabled={isLoading || !newQuestion.title.trim() || !newQuestion.content.trim()}
+                    className={`dialog-button ${isLoading ? 'cursor-not-allowed dialog-button-disabled' : ''}`}
+                  >
+                    {isLoading ? 'Submitting...' : 'Submit Question'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsDialogOpen(false)}
+                    className="dialog-button dialog-cancel-button"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="forum-questions">
-          <div className="forum-question">
-            <div className="question-stats">
-              <div className="answers">4 Answers</div>
-              <div className="score">2 Score</div>
+          {questions.map((question) => (
+            <div className="forum-question" key={question.id}>
+              <div className="question-stats">
+                <div className="answers">{question.answers} Answers</div>
+                <div className="score">{question.score} Score</div>
+              </div>
+              <div className="question-content">
+                <h4 className="question-title">{question.title}</h4>
+                <div className="question-device">{question.device}</div>
+              </div>
             </div>
-            <div className="question-content">
-              <h4 className="question-title">Display won't turn on, battery indicator flashes white.</h4>
-              <div className="question-device">ASUS TUF Dash F15</div>
-            </div>
-          </div>
-
-          <div className="forum-question">
-            <div className="question-stats">
-              <div className="answers">2 Answers</div>
-              <div className="score">1 Score</div>
-            </div>
-            <div className="question-content">
-              <h4 className="question-title">Powers On, No POST, Keyboard flashes, Black Screen</h4>
-              <div className="question-device">ASUS TUF Dash F15</div>
-            </div>
-          </div>
-
-          <div className="forum-question">
-            <div className="question-stats">
-              <div className="answers">3 Answers</div>
-              <div className="score">0 Score</div>
-            </div>
-            <div className="question-content">
-              <h4 className="question-title">Screen slowly turns black from the bottom up, like pixels dying</h4>
-              <div className="question-device">ASUS TUF Dash F15</div>
-            </div>
-          </div>
-
-          <div className="forum-question">
-            <div className="question-stats">
-              <div className="answers">1 Answer</div>
-              <div className="score">0 Score</div>
-            </div>
-            <div className="question-content">
-              <h4 className="question-title">Changing broken screen on a Laptop.</h4>
-              <div className="question-device">ASUS TUF Dash F15</div>
-            </div>
-          </div>
+          ))}
         </div>
 
         {/* Tools Section */}

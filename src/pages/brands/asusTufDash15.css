@@ -196,7 +196,7 @@
 /* Guides Grid Styles */
 .guides-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Increased minmax width */
   gap: 30px;
   margin-bottom: 30px;
 }
@@ -462,4 +462,123 @@
 .author-badges {
   margin-left: auto;
   text-align: right;
+}
+.forum-header {
+  display: flex;
+  justify-content: space-between; /* push button to the right */
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+}
+
+.ask-question-btn {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.ask-question-btn:hover {
+  background-color: #0056b3;
+}
+
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.dialog-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 500px;
+}
+
+.dialog-header {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.dialog-title {
+  font-size: 1.8em;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.dialog-description {
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.dialog-label {
+  font-weight: bold;
+  color: #333;
+  text-align: right;
+  padding-right: 10px;
+}
+
+.dialog-input {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.dialog-textarea {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 100px;
+  resize: vertical;
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.dialog-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  color: white;
+  background-color: #007bff;
+}
+
+.dialog-button:hover {
+  background-color: #0056b3;
+}
+
+.dialog-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.dialog-cancel-button {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.dialog-cancel-button:hover {
+  background-color: #ccc;
 }
