@@ -52,7 +52,23 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                             <Route path="guide" element={<GuidePage />} />
                             <Route path="fix-your-stuff" element={<FixYourStuffPage />} />
                             <Route path="community" element={<CommunityPage />} />
-                            <Route path="store" element={<StorePage />} />
+                            
+                            {/* Store Routes */}
+                            <Route path="store">
+                                <Route index element={<StorePage />} />
+                                <Route path="phone-parts" element={<StorePage />} />
+                                <Route path="laptop-parts" element={<StorePage />} />
+                                <Route path="phone-software" element={<StorePage />} />
+                                <Route path="laptop-software" element={<StorePage />} />
+                                <Route path="screens" element={<StorePage />} />
+                                <Route path="batteries" element={<StorePage />} />
+                                <Route path="chargers" element={<StorePage />} />
+                                <Route path="keyboards" element={<StorePage />} />
+                                <Route path="motherboards" element={<StorePage />} />
+                                <Route path="cooling-fans" element={<StorePage />} />
+                                <Route path=":category/:product" element={<StorePage />} />
+                            </Route>
+
                             <Route path="join" element={<JoinPage />} />
                             <Route path="login" element={<LoginPage />} />
                             <Route path="verify-email/:token" element={<VerifyEmail />} />

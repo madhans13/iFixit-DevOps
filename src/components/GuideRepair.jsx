@@ -2,9 +2,12 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom'; // ✅ Added useNavigate
 import '../componentStyles/GuideRepair.css';
 
-import phoneImg from '../assets/image.png';
-import laptopImg from '../assets/laptop.png';
-import tabletImg from '../assets/image.png';
+import phoneImg from '../assets/one9.png';
+import laptopImg from '../assets/asus_tuf.jpg';
+import switchImg from '../assets/tools1.png';
+import controllerImg from '../assets/tools2.png';
+import batteryImg from '../assets/battery.jpg';
+import screenImg from '../assets/screen.png';
 
 const categoriesTop = [
   { name: 'Phone', path: '/repair/phone' },
@@ -12,14 +15,38 @@ const categoriesTop = [
 ];
 
 const switchIssues = [
-  { title: "Nintendo Switch Blue Screen of Death", image: phoneImg },
-  { title: "Nintendo Switch Won't Turn On", image: laptopImg },
-  { title: "Nintendo Switch Black Screen", image: tabletImg },
-  { title: "Nintendo Switch Not Charging", image: phoneImg },
-  { title: "Nintendo Switch Battery Draining Fast", image: laptopImg },
-  { title: "Nintendo Switch No Video Out", image: tabletImg },
-  { title: "Nintendo Switch Joy-Con Drift", image: phoneImg },
-  { title: "Switch Pro Controller Joystick Drift", image: laptopImg }
+  { 
+    title: "Nintendo Switch Blue Screen of Death", 
+    image: screenImg 
+  },
+  { 
+    title: "Nintendo Switch Won't Turn On", 
+    image: switchImg 
+  },
+  { 
+    title: "Nintendo Switch Black Screen", 
+    image: screenImg 
+  },
+  { 
+    title: "Nintendo Switch Not Charging", 
+    image: batteryImg 
+  },
+  { 
+    title: "Nintendo Switch Battery Draining Fast", 
+    image: batteryImg 
+  },
+  { 
+    title: "Nintendo Switch No Video Out", 
+    image: controllerImg 
+  },
+  { 
+    title: "Nintendo Switch Joy-Con Drift", 
+    image: controllerImg 
+  },
+  { 
+    title: "Switch Pro Controller Joystick Drift", 
+    image: controllerImg 
+  }
 ];
 
 const GuideRepair = () => {

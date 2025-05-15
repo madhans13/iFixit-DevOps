@@ -8,13 +8,28 @@ const routeLabels = {
   'login': 'Login',
   'join': 'Sign Up',
   'guides': 'Repair Guides',
-  'products': 'Products',
+  'store': 'Store',
   'profile': 'Profile',
   'settings': 'Settings',
   'verify-email': 'Email Verification',
   'reset-password': 'Reset Password',
   'create-guide': 'Create Guide',
   'edit-guide': 'Edit Guide',
+  'phone-parts': 'Phone Parts',
+  'laptop-parts': 'Laptop Parts',
+  'phone-software': 'Phone Software',
+  'laptop-software': 'Laptop Software',
+  'screens': 'Screens',
+  'batteries': 'Batteries',
+  'chargers': 'Chargers',
+  'keyboards': 'Keyboards',
+  'motherboards': 'Motherboards',
+  'cooling-fans': 'Cooling Fans',
+  'touchpads': 'Touchpads',
+  'display-cables': 'Display Cables',
+  'fans': 'Fans',
+  'usb-ports': 'USB Ports',
+  'operating-systems': 'Operating Systems'
 };
 
 const Breadcrumbs = () => {
@@ -32,7 +47,9 @@ const Breadcrumbs = () => {
     // Handle dynamic routes (e.g., guide/:id)
     const isDynamic = !routeLabels[value];
     const displayLabel = isDynamic ? 
-      decodeURIComponent(value).replace(/-/g, ' ') : 
+      decodeURIComponent(value)
+        .replace(/-/g, ' ')
+        .replace(/(^\w|\s\w)/g, letter => letter.toUpperCase()) : 
       label;
 
     return (
