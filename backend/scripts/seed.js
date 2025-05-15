@@ -2,9 +2,11 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const guides = require('../data/guides');
 const products = require('../data/products');
+const devices = require('../data/devices');
 const User = require('../models/User');
 const Guide = require('../models/Guide');
 const Product = require('../models/Product');
+const Device = require('../models/Device');
 
 const adminUser = {
   username: 'admin',
@@ -27,7 +29,8 @@ async function seedDatabase() {
     await Promise.all([
       User.deleteMany({}),
       Guide.deleteMany({}),
-      Product.deleteMany({})
+      Product.deleteMany({}),
+      Device.deleteMany({})
     ]);
 
     console.log('Cleared existing data');
@@ -41,14 +44,25 @@ async function seedDatabase() {
 
     console.log('Created admin user');
 
-    // Add user reference to guides
-    const guidesWithUser = guides.map(guide => ({
+    // Insert devices
+    const createdDevices = await Device.insertMany(devices);
+    console.log('Inserted devices');
+
+    // Create a map of device names to their IDs
+    const deviceMap = {};
+    createdDevices.forEach(device => {
+      deviceMap[device.name] = device._id;
+    });
+
+    // Add user and device reference to guides
+    const guidesWithRefs = guides.map(guide => ({
       ...guide,
-      author: user._id
+      author: user._id,
+      device: deviceMap[guide.deviceName] || deviceMap['iPhone 13'] // fallback to iPhone 13 if device not found
     }));
 
     // Insert guides
-    await Guide.insertMany(guidesWithUser);
+    await Guide.insertMany(guidesWithRefs);
     console.log('Inserted guides');
 
     // Insert products

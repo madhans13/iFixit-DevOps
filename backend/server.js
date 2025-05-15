@@ -7,6 +7,9 @@ const bcrypt = require('bcryptjs');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const morgan = require('morgan');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 const authRoutes = require('./routes/auth');
 const session = require('express-session');
 const passport = require('./config/passport');
@@ -18,24 +21,76 @@ const PORT = process.env.PORT || 5000;
 const User = require('./models/User');
 const Guide = require('./models/Guide');
 const Product = require('./models/Product');
+const Device = require('./models/Device');
 
-// Security middleware
-app.use(helmet());
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const uploadDir = path.join(__dirname, 'uploads');
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    cb(null, uploadDir);
+  },
+  filename: function (req, file, cb) {
+    // Generate a unique filename with timestamp and original extension
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    const ext = path.extname(file.originalname);
+    cb(null, uniqueSuffix + ext);
+  }
+});
 
-// Logging middleware
-app.use(morgan('dev'));
+const upload = multer({ 
+  storage: storage,
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    // Accept only image files
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed!'));
+    }
+  }
+});
 
-// Body parser middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// CORS configuration
+// Middleware
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:5174'],
+  origin: 'http://localhost:5173',
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Disable helmet for development
+app.use(helmet({
+  crossOriginResourcePolicy: false,
+  crossOriginEmbedderPolicy: false
+}));
+
+app.use(morgan('dev'));
+
+// Serve static files with proper headers
+app.use('/uploads', (req, res, next) => {
+  res.set({
+    'Access-Control-Allow-Origin': 'http://localhost:5173',
+    'Cache-Control': 'public, max-age=3600',
+    'Cross-Origin-Resource-Policy': 'cross-origin'
+  });
+  express.static(path.join(__dirname, 'uploads'))(req, res, next);
+});
+
+// Add headers for all responses
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header('Access-Control-Allow-Credentials', true);
+  next();
+});
 
 // Session configuration
 app.use(session({
@@ -44,27 +99,21 @@ app.use(session({
   saveUninitialized: false,
   cookie: {
     secure: process.env.NODE_ENV === 'production',
-    maxAge: 24 * 60 * 60 * 1000, // 24 hours
-    sameSite: 'lax',
-    httpOnly: true
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
   }
 }));
 
-// Initialize Passport and restore authentication state from session
+// Initialize Passport
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100 // limit each IP to 100 requests per windowMs
-});
-app.use('/api/', limiter);
-
 // Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('Connected to MongoDB'))
-  .catch(err => console.error('MongoDB connection error:', err));
+mongoose.connect('mongodb://127.0.0.1:27017/ifixit', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => console.log('Connected to MongoDB'))
+.catch(err => console.error('MongoDB connection error:', err));
 
 // Authentication Middleware
 const authenticateToken = (req, res, next) => {
@@ -75,11 +124,11 @@ const authenticateToken = (req, res, next) => {
     return res.status(401).json({ error: 'Access token required' });
   }
 
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+  jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key', (err, decoded) => {
     if (err) {
       return res.status(403).json({ error: 'Invalid or expired token' });
     }
-    req.user = user;
+    req.user = decoded;
     next();
   });
 };
@@ -88,6 +137,27 @@ const authenticateToken = (req, res, next) => {
 app.use('/api/auth', authRoutes);
 
 // Guide Routes
+app.get('/api/guides/:guideId', async (req, res) => {
+  try {
+    const guide = await Guide.findById(req.params.guideId)
+      .populate('author', 'username reputation')
+      .populate('device', 'name brand');
+    
+    if (!guide) {
+      return res.status(404).json({ error: 'Guide not found' });
+    }
+
+    // Increment views
+    guide.views += 1;
+    await guide.save();
+    
+    res.json(guide);
+  } catch (error) {
+    console.error('Error fetching guide:', error);
+    res.status(500).json({ error: 'Error fetching guide' });
+  }
+});
+
 app.get('/api/guides', async (req, res) => {
   try {
     const { search, category, difficulty, sort = 'newest' } = req.query;
@@ -128,16 +198,94 @@ app.get('/api/guides', async (req, res) => {
   }
 });
 
-app.post('/api/guides', authenticateToken, async (req, res) => {
+app.post('/api/guides', authenticateToken, upload.array('images'), async (req, res) => {
   try {
-    const guide = new Guide({
-      ...req.body,
-      author: req.user.userId
+    console.log('Received guide submission request');
+    console.log('User:', req.user);
+    console.log('Files:', req.files);
+    console.log('Body:', req.body);
+
+    const {
+      title,
+      category,
+      difficulty,
+      timeRequired,
+      introduction,
+      prerequisites,
+      steps,
+      status,
+      deviceName,
+      deviceBrand
+    } = req.body;
+
+    // Parse JSON strings
+    const parsedSteps = JSON.parse(steps);
+    const parsedPrerequisites = JSON.parse(prerequisites);
+    const parsedTimeRequired = JSON.parse(timeRequired);
+
+    // Process uploaded images and map them to steps
+    let fileIndex = 0;
+    const processedSteps = parsedSteps.map(step => {
+      const stepImages = [];
+      const numImages = step.images.length;
+      
+      for (let i = 0; i < numImages; i++) {
+        if (req.files[fileIndex]) {
+          stepImages.push({
+            url: req.files[fileIndex].filename,
+            caption: `Step ${step.order} image ${i + 1}`
+          });
+          fileIndex++;
+        }
+      }
+      
+      return {
+        ...step,
+        images: stepImages
+      };
     });
-    await guide.save();
-    res.status(201).json(guide);
+
+    // Find or create device
+    let device = await Device.findOne({ 
+      name: deviceName,
+      brand: deviceBrand
+    });
+
+    if (!device) {
+      device = await Device.create({
+        name: deviceName,
+        brand: deviceBrand,
+        category: 'other',
+        model: deviceName,
+        status: 'active'
+      });
+    }
+
+    // Create guide with processed steps
+    const guide = new Guide({
+      title,
+      category,
+      difficulty: parseInt(difficulty),
+      timeRequired: parsedTimeRequired,
+      introduction,
+      prerequisites: parsedPrerequisites,
+      steps: processedSteps,
+      status,
+      author: req.user.id,
+      device: device._id
+    });
+
+    const savedGuide = await guide.save();
+    
+    // Populate the response with author details
+    const populatedGuide = await Guide.findById(savedGuide._id)
+      .populate('author', 'username')
+      .populate('device', 'name brand');
+
+    res.status(201).json(populatedGuide);
   } catch (error) {
-    res.status(500).json({ error: 'Error creating guide' });
+    console.error('Error creating guide:', error);
+    res.status(500).json({ error: 'Something broke!' });
   }
 });
 
@@ -200,5 +348,5 @@ app.use((err, req, res, next) => {
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });

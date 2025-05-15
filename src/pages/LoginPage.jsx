@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import { Eye, EyeOff, User, Lock } from 'lucide-react';
 import '../componentStyles/AuthPages.css';
+import { FormField } from '../components/FormValidation';
 
 function LoginPage() {
   const usernameInputRef = useRef(null);
@@ -19,6 +21,7 @@ function LoginPage() {
   const [userEmail, setUserEmail] = useState('');
   const navigate = useNavigate();
   const { login, resendVerification } = useAuth();
+  const { showToast } = useToast();
 
   useEffect(() => {
     usernameInputRef.current?.focus();
@@ -44,11 +47,12 @@ function LoginPage() {
   };
 
   const validateForm = () => {
-    if (!formData.username || !formData.password) {
-      setError('Please fill in all fields');
-      return false;
-    }
-    return true;
+    const newErrors = {};
+    if (!formData.username) newErrors.username = 'Username is required';
+    if (!formData.password) newErrors.password = 'Password is required';
+    setError(newErrors.username || newErrors.password || '');
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleResendVerification = async () => {
@@ -65,7 +69,7 @@ function LoginPage() {
 
       if (result.success) {
         setError('');
-        alert('Verification email sent! Please check your inbox.');
+        showToast('Verification email sent! Please check your inbox.', 'success');
       } else {
         setError(result.error || 'Failed to resend verification email');
       }
@@ -80,7 +84,10 @@ function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!validateForm()) return;
+    if (!validateForm()) {
+      showToast('Please fill in all required fields', 'error');
+      return;
+    }
     
     setError('');
     setLoading(true);
@@ -93,6 +100,7 @@ function LoginPage() {
 
       if (result.success) {
         setSuccess(true);
+        showToast('Login successful!', 'success');
         setTimeout(() => {
           navigate('/');
         }, 1000);
@@ -107,7 +115,7 @@ function LoginPage() {
       }
     } catch (err) {
       console.error('Login submission error:', err);
-      setError('An error occurred during login. Please try again.');
+      showToast(err.message || 'An error occurred during login. Please try again.', 'error');
     } finally {
       setLoading(false);
     }

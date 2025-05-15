@@ -1,5 +1,6 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // ✅ Added useNavigate
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import '../componentStyles/GuideRepair.css';
 
 import phoneImg from '../assets/one9.png';
@@ -50,7 +51,26 @@ const switchIssues = [
 ];
 
 const GuideRepair = () => {
-  const navigate = useNavigate(); // ✅ Hook for navigation
+  const navigate = useNavigate();
+  const [guides, setGuides] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchGuides = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/guides');
+        setGuides(response.data);
+        setLoading(false);
+      } catch (err) {
+        console.error('Error fetching guides:', err);
+        setError('Failed to load guides');
+        setLoading(false);
+      }
+    };
+
+    fetchGuides();
+  }, []);
 
   return (
     <div className="repair-guides-container">
@@ -61,6 +81,53 @@ const GuideRepair = () => {
         <button className="create-guide" onClick={() => navigate('/create-guide')}>
           Create a Guide
         </button>
+      </div>
+
+      {/* User Created Guides Section */}
+      <div className="user-guides-section">
+        <h2 className="section-title">Recently Created Guides</h2>
+        {loading ? (
+          <div className="loading">Loading guides...</div>
+        ) : error ? (
+          <div className="error">{error}</div>
+        ) : guides.length > 0 ? (
+          <div className="guides-grid">
+            {guides.map((guide) => (
+              <div key={guide._id} className="guide-card" onClick={() => navigate(`/guides/${guide._id}`)}>
+                {guide.steps[0]?.images[0] ? (
+                  <div className="guide-image">
+                    <img 
+                      src={`http://localhost:5000/uploads/${guide.steps[0].images[0].url}`} 
+                      alt={guide.title}
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = batteryImg; // Fallback to a default image
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <div className="guide-image">
+                    <img src={batteryImg} alt={guide.title} />
+                  </div>
+                )}
+                <div className="guide-info">
+                  <h3>{guide.title}</h3>
+                  <p className="guide-author">By {guide.author?.username}</p>
+                  <div className="guide-metadata">
+                    <span>{guide.timeRequired?.value} {guide.timeRequired?.unit}</span>
+                    <span>•</span>
+                    <span>Difficulty: {guide.difficulty}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="no-guides">
+            <p>No guides found. Be the first to create a guide!</p>
+            <button onClick={() => navigate('/create-guide')}>Create Guide</button>
+          </div>
+        )}
       </div>
 
       <div className="banner">
