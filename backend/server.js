@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -6,6 +7,9 @@ const bcrypt = require('bcryptjs');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const morgan = require('morgan');
+const authRoutes = require('./routes/auth');
+const session = require('express-session');
+const passport = require('./config/passport');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -15,11 +19,40 @@ const User = require('./models/User');
 const Guide = require('./models/Guide');
 const Product = require('./models/Product');
 
-// Enhanced Middleware
-app.use(cors());
+// Security middleware
+app.use(helmet());
+
+// Logging middleware
+app.use(morgan('dev'));
+
+// Body parser middleware
 app.use(express.json());
-app.use(helmet()); // Security headers
-app.use(morgan('dev')); // Logging
+app.use(express.urlencoded({ extended: true }));
+
+// CORS configuration
+app.use(cors({
+  origin: ['http://localhost:5173', 'http://localhost:5174'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// Session configuration
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'your-secret-key',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    sameSite: 'lax',
+    httpOnly: true
+  }
+}));
+
+// Initialize Passport and restore authentication state from session
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Rate limiting
 const limiter = rateLimit({
@@ -28,15 +61,10 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
-// MongoDB Connection
-mongoose.connect('mongodb://127.0.0.1:27017/ifixit', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-}).then(() => {
-  console.log('Connected to MongoDB');
-}).catch(err => {
-  console.error('Error connecting to MongoDB:', err);
-});
+// Connect to MongoDB
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log('Connected to MongoDB'))
+  .catch(err => console.error('MongoDB connection error:', err));
 
 // Authentication Middleware
 const authenticateToken = (req, res, next) => {
@@ -47,7 +75,7 @@ const authenticateToken = (req, res, next) => {
     return res.status(401).json({ error: 'Access token required' });
   }
 
-  jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key', (err, user) => {
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
     if (err) {
       return res.status(403).json({ error: 'Invalid or expired token' });
     }
@@ -56,57 +84,8 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
-// Auth Routes
-app.post('/api/auth/register', async (req, res) => {
-  try {
-    const { username, email, password } = req.body;
-    
-    // Check if user exists
-    const existingUser = await User.findOne({ $or: [{ email }, { username }] });
-    if (existingUser) {
-      return res.status(400).json({ error: 'Username or email already exists' });
-    }
-
-    const user = new User({ username, email, password });
-    await user.save();
-
-    const token = jwt.sign(
-      { userId: user._id },
-      process.env.JWT_SECRET || 'your-secret-key',
-      { expiresIn: '24h' }
-    );
-
-    res.status(201).json({ token, userId: user._id });
-  } catch (error) {
-    res.status(500).json({ error: 'Error creating user' });
-  }
-});
-
-app.post('/api/auth/login', async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    const user = await User.findOne({ email });
-
-    if (!user || !(await user.comparePassword(password))) {
-      return res.status(401).json({ error: 'Invalid credentials' });
-    }
-
-    const token = jwt.sign(
-      { userId: user._id },
-      process.env.JWT_SECRET || 'your-secret-key',
-      { expiresIn: '24h' }
-    );
-
-    res.json({
-      token,
-      userId: user._id,
-      username: user.username,
-      email: user.email
-    });
-  } catch (error) {
-    res.status(500).json({ error: 'Error logging in' });
-  }
-});
+// Routes
+app.use('/api/auth', authRoutes);
 
 // Guide Routes
 app.get('/api/guides', async (req, res) => {
@@ -193,7 +172,7 @@ app.post('/api/products', authenticateToken, async (req, res) => {
     const product = new Product(req.body);
     await product.save();
     res.status(201).json(product);
-  } catch (error) {
+    } catch (error) {
     res.status(500).json({ error: 'Error creating product' });
   }
 });
@@ -213,7 +192,13 @@ app.get('/api/users/:userId', authenticateToken, async (req, res) => {
   }
 });
 
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Something broke!' });
+});
+
 // Start server
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });

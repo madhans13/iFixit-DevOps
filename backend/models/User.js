@@ -6,7 +6,9 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    trim: true
+    trim: true,
+    minlength: 3,
+    index: true
   },
   email: {
     type: String,
@@ -17,7 +19,13 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true
+    required: true,
+    minlength: 8
+  },
+  googleId: {
+    type: String,
+    sparse: true,
+    unique: true
   },
   profilePicture: String,
   reputation: {
@@ -49,6 +57,19 @@ const userSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Guide'
   }],
+  isVerified: {
+    type: Boolean,
+    default: false
+  },
+  verificationToken: String,
+  verificationExpires: Date,
+  resetPasswordToken: String,
+  resetPasswordExpires: Date,
+  loginAttempts: {
+    type: Number,
+    default: 0
+  },
+  lockUntil: Date,
   createdAt: {
     type: Date,
     default: Date.now
@@ -57,16 +78,67 @@ const userSchema = new mongoose.Schema({
   timestamps: true
 });
 
+// Create compound index for login attempts
+userSchema.index({ username: 1, loginAttempts: 1, lockUntil: 1 });
+
 // Hash password before saving
 userSchema.pre('save', async function(next) {
   if (!this.isModified('password')) return next();
-  this.password = await bcrypt.hash(this.password, 10);
-  next();
+  
+  try {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+  } catch (error) {
+    next(error);
+  }
 });
 
-// Method to compare password
+// Compare password method
 userSchema.methods.comparePassword = async function(candidatePassword) {
-  return await bcrypt.compare(candidatePassword, this.password);
+  try {
+    console.log('Comparing passwords for user:', this.username);
+    const isMatch = await bcrypt.compare(candidatePassword, this.password);
+    console.log('Password comparison result:', isMatch);
+    return isMatch;
+  } catch (error) {
+    console.error('Password comparison error:', error);
+    throw error;
+  }
+};
+
+// Check if account is locked
+userSchema.methods.isLocked = function() {
+  return !!(this.lockUntil && this.lockUntil > Date.now());
+};
+
+// Increment login attempts
+userSchema.methods.incrementLoginAttempts = async function() {
+  // Reset attempts if lock has expired
+  if (this.lockUntil && this.lockUntil < Date.now()) {
+    return await this.updateOne({
+      $set: { loginAttempts: 1 },
+      $unset: { lockUntil: 1 }
+    });
+  }
+
+  // Otherwise increment
+  const updates = { $inc: { loginAttempts: 1 } };
+  
+  // Lock the account if we've reached max attempts
+  if (this.loginAttempts + 1 >= 5) {
+    updates.$set = { lockUntil: Date.now() + 1800000 }; // Lock for 30 minutes
+  }
+
+  return await this.updateOne(updates);
+};
+
+// Reset login attempts
+userSchema.methods.resetLoginAttempts = function() {
+  return this.updateOne({
+    $set: { loginAttempts: 0 },
+    $unset: { lockUntil: 1 }
+  });
 };
 
 module.exports = mongoose.model('User', userSchema); 

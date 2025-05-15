@@ -59,49 +59,49 @@ img {
 
 /* --- Header --- */
 .main-header {
-  background-color: #000000; /* Light grey background */
-  border-bottom: 1px solid #000000;
-  padding: 10px 0;
-  flex-shrink: 0; /* Prevent header from shrinking */
+  background-color: #1B1B1B;
+  padding: 12px 20px;
+  position: relative;
+  z-index: 1000;
 }
 
 .header-content {
-  max-width: 1200px; /* Adjust as needed */
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 0 20px;
   display: flex;
-  flex-wrap: wrap; /* Allow wrapping on smaller screens */
   justify-content: space-between;
   align-items: center;
-  gap: 10px; /* Add some gap for wrapped items */
 }
 
-.header-left, .header-right {
+.header-left {
   display: flex;
   align-items: center;
-  gap: 15px; /* Space between items */
-  flex-wrap: wrap; /* Allow inner items to wrap if needed */
+  gap: 30px;
 }
 
 .logo {
-  position: absolute;
-  top: 10px;
-  left: 50px;
-  height: 30px;
+  position: static;
+  display: flex;
+  align-items: center;
 }
 
-
+.logo img {
+  height: 24px;
+  width: auto;
+}
 
 .main-nav ul {
   display: flex;
-  gap: 45px;
+  gap: 25px;
+  margin: 0;
+  padding: 0;
 }
-
 
 .main-nav a {
   color: #ffffff;
-  font-weight: bold;
-  white-space: nowrap; /* Prevent nav links from wrapping */
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
 }
 
 .currency-selector, .language-selector {
@@ -123,49 +123,141 @@ img {
 .search-bar-header {
   display: flex;
   align-items: center;
-  width: 400px;
-  background-color: #fff;
-  border: 1px solid #ced4da;
-  border-radius: 40px;
-  padding: 10px 10px ;
-  margin-left: 40px;
-  
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 6px 12px;
+  width: 300px;
 }
 
 .search-bar-header input {
   border: none;
   outline: none;
-  padding-left: 5px;
-  background: transparent;
-  min-width: 100px; /* Give search some minimum width */
+  width: 100%;
+  padding: 0 8px;
+  font-size: 14px;
 }
 
 .search-icon {
-  color: #6c757d; /* Grey icon color */
+  color: #666;
 }
 
 .header-icons {
-  margin-top: 5px;
-  margin-right: 50px;
   display: flex;
-  gap: 25px;
-  font-size: 1.2em; /* Adjust icon size */
+  align-items: center;
+  gap: 16px;
 }
 
 .header-icons a {
   color: #ffffff;
 }
 
-.auth-links {
-  position: absolute;
-  right: 25px;
+.header-right {
   display: flex;
-  gap: 15px;
-  white-space: nowrap;
-  font-weight: 400;
+  align-items: center;
+  gap: 16px;
 }
 
+.header-auth-links {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  margin-left: 10px;
+}
 
+.header-auth-links a {
+  color: #ffffff;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  line-height: 1;
+  min-width: 70px;
+  text-align: center;
+}
+
+.header-auth-links a:first-child {
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.header-auth-links a:last-child {
+  background-color: #2d84fb;
+}
+
+.header-auth-links a:first-child:hover {
+  border-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.header-auth-links a:last-child:hover {
+  background-color: #1a75ec;
+}
+
+/* Add these styles after the existing .header-icons styles */
+
+.user-menu {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #ffffff;
+  text-decoration: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.user-profile:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  text-decoration: none;
+}
+
+.username {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.admin-icon {
+  color: #ffd700;
+}
+
+.logout-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.logout-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.logout-button span {
+  font-size: 14px;
+}
+
+/* Admin-specific navigation styles */
+.main-nav ul li a.admin-link {
+  color: #ffd700;
+}
+
+.main-nav ul li a.admin-link:hover {
+  color: #fff7cc;
+}
 
 /* --- Shipping Banner --- */
 .shipping-banner {
