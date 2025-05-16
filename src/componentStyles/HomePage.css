@@ -121,12 +121,21 @@ img {
 }
 
 .search-bar-header {
+  position: relative;
   display: flex;
   align-items: center;
   background-color: #ffffff;
   border-radius: 20px;
-  padding: 6px 12px;
-  width: 300px;
+  padding: 8px 16px;
+  width: 400px; /* Increased from 300px */
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
+}
+
+.search-bar-header:focus-within {
+  border-color: #2d84fb;
+  box-shadow: 0 0 0 3px rgba(45, 132, 251, 0.1);
+  width: 500px; /* Expand on focus */
 }
 
 .search-bar-header input {
@@ -139,6 +148,57 @@ img {
 
 .search-icon {
   color: #666;
+}
+
+.clear-search {
+  background: none;
+  border: none;
+  padding: 4px;
+  color: #666;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.clear-search:hover {
+  background-color: #f1f5f9;
+  color: #2d84fb;
+}
+
+.header-search-results {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0;
+  z-index: 50;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.close-results {
+  position: sticky;
+  bottom: 0;
+  width: 100%;
+  padding: 12px;
+  background: white;
+  border: none;
+  border-top: 1px solid #e2e8f0;
+  color: #666;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.close-results:hover {
+  background-color: #f8fafc;
+  color: #2d84fb;
 }
 
 .header-icons {
@@ -684,5 +744,36 @@ height: 16px;
 
   .copyright {
     text-align: center;
+  }
+}
+
+/* Add responsive adjustments */
+@media (max-width: 1024px) {
+  .search-bar-header {
+    width: 300px;
+  }
+  
+  .search-bar-header:focus-within {
+    width: 400px;
+  }
+}
+
+@media (max-width: 768px) {
+  .search-bar-header {
+    width: 250px;
+  }
+  
+  .search-bar-header:focus-within {
+    width: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .search-bar-header {
+    width: 200px;
+  }
+  
+  .search-bar-header:focus-within {
+    width: 240px;
   }
 }

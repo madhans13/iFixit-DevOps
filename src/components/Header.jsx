@@ -1,23 +1,64 @@
 // components/Header.jsx
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Search,
   ShoppingCart,
   User,
   LogOut,
-  Settings
+  Settings,
+  X
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { api } from '../services/api';
+import SearchResults from './SearchResults';
 import logo from '../assets/react.svg';
 
 const Header = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [results, setResults] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showResults, setShowResults] = useState(false);
+  const [debouncedQuery, setDebouncedQuery] = useState('');
 
   useEffect(() => {
-    console.log('Current user in Header:', user);
-  }, [user]);
+    const timer = setTimeout(() => {
+      setDebouncedQuery(searchQuery);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    const performSearch = async () => {
+      if (!debouncedQuery) {
+        setResults(null);
+        return;
+      }
+
+      setIsLoading(true);
+      try {
+        const [guidesResponse, productsResponse] = await Promise.all([
+          api.getGuides({ search: debouncedQuery }),
+          api.getProducts({ search: debouncedQuery })
+        ]);
+
+        setResults({
+          guides: guidesResponse,
+          products: productsResponse
+        });
+      } catch (error) {
+        console.error('Search failed:', error);
+        setResults(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    performSearch();
+  }, [debouncedQuery]);
 
   const handleLogout = () => {
     logout();
@@ -51,7 +92,39 @@ const Header = () => {
         <div className="header-right">
           <div className="search-bar-header">
             <Search size={16} className="search-icon" />
-            <input type="text" placeholder="Search" />
+            <input 
+              type="text" 
+              placeholder="Search" 
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setShowResults(true);
+              }}
+              onFocus={() => setShowResults(true)}
+            />
+            {searchQuery && (
+              <button 
+                className="clear-search"
+                onClick={() => {
+                  setSearchQuery('');
+                  setResults(null);
+                  setShowResults(false);
+                }}
+              >
+                <X size={16} />
+              </button>
+            )}
+            {showResults && (searchQuery || results) && (
+              <div className="header-search-results">
+                <SearchResults results={results} isLoading={isLoading} />
+                <button 
+                  className="close-results"
+                  onClick={() => setShowResults(false)}
+                >
+                  Close
+                </button>
+              </div>
+            )}
           </div>
           
           <div className="header-icons">

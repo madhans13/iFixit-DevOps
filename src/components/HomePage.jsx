@@ -16,11 +16,12 @@ import {
   Video,
   Search
 } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
+import SearchBar from './SearchBar';
 import image from '../assets/image.png';
 import logo from '../assets/react.svg';
 import laptop from '../assets/laptop.png';
 import community from '../assets/community.png';
-import { useNavigate, Link } from 'react-router-dom';
 import heroImage from '../assets/repair.jpg';
 
 function HomePage() {
@@ -39,12 +40,12 @@ function HomePage() {
       <main className="hero-section">
         <div className="hero-content">
           <h1>Explore a World of Repair</h1>
-          <div className="search-bar-hero">
-            <Search size={16} className="search-icon" />
-            <input type="text" placeholder='Try "Moto G5 Plus screen"' />
-          </div>
+          <SearchBar />
           <div className="separator">or</div>
-          <button className="find-device-button">
+          <button 
+            className="find-device-button"
+            onClick={() => navigate('/fix-your-stuff')}
+          >
             <Wrench size={16} className="button-icon" />
             Find Your Device
           </button>
