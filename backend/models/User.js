@@ -57,14 +57,6 @@ const userSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Guide'
   }],
-  isVerified: {
-    type: Boolean,
-    default: false
-  },
-  verificationToken: String,
-  verificationExpires: Date,
-  resetPasswordToken: String,
-  resetPasswordExpires: Date,
   loginAttempts: {
     type: Number,
     default: 0

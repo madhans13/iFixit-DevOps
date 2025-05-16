@@ -2,9 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const crypto = require('crypto');
 const User = require('../models/User');
-const { sendVerificationEmail } = require('../services/emailService');
 const rateLimit = require('express-rate-limit');
 
 // Rate limiting setup
@@ -15,11 +13,6 @@ const loginLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false
 });
-
-// Generate verification token
-const generateToken = () => {
-  return crypto.randomBytes(32).toString('hex');
-};
 
 // Register route
 router.post('/register', async (req, res) => {
@@ -68,84 +61,25 @@ router.post('/register', async (req, res) => {
       return res.status(400).json({ error: 'Password must contain at least one special character' });
     }
 
-    // Generate verification token
-    const verificationToken = generateToken();
-    const verificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
-
     // Create new user
     const user = new User({
       username,
       email,
       password, // Password will be hashed by the pre-save middleware
-      verificationToken,
-      verificationExpires,
-      isVerified: false // Explicitly set verification status
+      isVerified: true // Set to true by default now
     });
 
     console.log('Saving new user:', username);
     await user.save();
     console.log('User saved successfully:', username);
 
-    // Send verification email
-    await sendVerificationEmail(email, verificationToken);
-    console.log('Verification email sent to:', email);
-
     res.status(201).json({ 
       success: true,
-      message: 'Registration successful! Please check your email to verify your account.',
-      verificationToken // Only for development, remove in production
+      message: 'Registration successful! You can now log in.'
     });
   } catch (error) {
     console.error('Registration error:', error);
     res.status(500).json({ error: 'Registration failed. Please try again.' });
-  }
-});
-
-// Email verification route
-router.post('/verify-email', async (req, res) => {
-  try {
-    const { token } = req.body;
-    console.log('Attempting to verify email with token:', token);
-
-    if (!token) {
-      console.log('No token provided');
-      return res.status(400).json({ error: 'Verification token is required' });
-    }
-
-    const user = await User.findOne({
-      verificationToken: token,
-      verificationExpires: { $gt: Date.now() }
-    });
-
-    if (!user) {
-      console.log('No user found with token:', token);
-      // Try to find user without expiry check to see if token expired
-      const expiredUser = await User.findOne({ verificationToken: token });
-      if (expiredUser) {
-        console.log('Found user but token expired for:', expiredUser.email);
-        return res.status(400).json({ error: 'Verification token has expired' });
-      }
-      return res.status(400).json({ error: 'Invalid verification token' });
-    }
-
-    console.log('User found:', user.email, 'Proceeding with verification');
-
-    // Update user verification status
-    user.isVerified = true;
-    user.verificationToken = undefined;
-    user.verificationExpires = undefined;
-    
-    await user.save();
-    console.log('User verified successfully:', user.email);
-
-    res.json({ 
-      success: true,
-      message: 'Email verified successfully',
-      email: user.email
-    });
-  } catch (error) {
-    console.error('Verification error:', error);
-    res.status(500).json({ error: 'Verification failed' });
   }
 });
 
@@ -165,8 +99,6 @@ router.post('/login', loginLimiter, async (req, res) => {
       console.log('User not found:', username);
       return res.status(401).json({ error: 'Invalid username or password' });
     }
-
-    console.log('User found:', user.username, 'Verified:', user.isVerified);
 
     // Check if account is locked
     if (user.isLocked && user.isLocked()) {
@@ -191,23 +123,6 @@ router.post('/login', loginLimiter, async (req, res) => {
       return res.status(401).json({ error: 'Invalid username or password' });
     }
 
-    // Check if email is verified
-    if (!user.isVerified) {
-      console.log('User not verified:', user.username);
-      // Generate new verification token if expired
-      if (!user.verificationToken || new Date() > user.verificationExpires) {
-        user.verificationToken = generateToken();
-        user.verificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000);
-        await user.save();
-        await sendVerificationEmail(user.email, user.verificationToken);
-      }
-      return res.status(403).json({ 
-        error: 'Please verify your email first',
-        message: 'A new verification email has been sent if the previous one expired.',
-        email: user.email
-      });
-    }
-
     // Reset login attempts on successful login
     if (user.resetLoginAttempts) {
       await user.resetLoginAttempts();
@@ -215,60 +130,29 @@ router.post('/login', loginLimiter, async (req, res) => {
 
     // Generate JWT token
     const token = jwt.sign(
-      { id: user._id, username: user.username },
-      process.env.JWT_SECRET || 'your-secret-key',
+      { 
+        userId: user._id,
+        username: user.username,
+        email: user.email,
+        role: user.role
+      },
+      process.env.JWT_SECRET,
       { expiresIn: '24h' }
     );
 
-    console.log('Login successful for user:', user.username);
-
     res.json({
+      success: true,
       token,
       user: {
         id: user._id,
         username: user.username,
         email: user.email,
-        isVerified: user.isVerified
+        role: user.role
       }
     });
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ error: 'Login failed. Please try again.' });
-  }
-});
-
-// Resend verification email route
-router.post('/resend-verification', async (req, res) => {
-  try {
-    const { email } = req.body;
-
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    if (user.isVerified) {
-      return res.status(400).json({ error: 'Email is already verified' });
-    }
-
-    // Generate new verification token
-    const verificationToken = generateToken();
-    const verificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000);
-
-    user.verificationToken = verificationToken;
-    user.verificationExpires = verificationExpires;
-    await user.save();
-
-    // Send new verification email
-    await sendVerificationEmail(email, verificationToken);
-
-    res.json({ 
-      message: 'Verification email sent',
-      verificationToken // Only for development, remove in production
-    });
-  } catch (error) {
-    console.error('Resend verification error:', error);
-    res.status(500).json({ error: 'Failed to resend verification email' });
   }
 });
 

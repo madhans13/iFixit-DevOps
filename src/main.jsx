@@ -17,7 +17,6 @@ import CommunityPage from './components/Community';
 import StorePage from './components/ShopStore';
 import JoinPage from './pages/JoinPage';
 import LoginPage from './pages/LoginPage';
-import VerifyEmail from './pages/VerifyEmail';
 import CartPage from './pages/CartPage';
 import AccountPage from './pages/AccountPage';
 import CreateGuidePage from './pages/CreateGuide';
@@ -29,15 +28,11 @@ import AsusPage from './pages/brands/asus';
 import AsusTufDash15 from './pages/brands/AsusTufDash15';
 import BatteryReplacement from './pages/repair/BatteryReplacement';
 import PhoneRepairPage from './Repair/phone';
-// Import the OnePlus brand page component
 import OnePlusPage from './pages/brands/oneplus';
-// Import the OnePlus 9 page component
 import OnePlus9Page from './pages/brands/oneplus9';
-// Import the new Phone Battery Replacement Page
 import PhoneBatteryReplacementPage from './pages/repair/PhoneBatteryReplacementPage';
-import OSGuide from './pages/brands/OsGuide'; // Import the OSGuide component
+import OSGuide from './pages/brands/OsGuide';
 import WindowsInstallGuide from './components/WindowsInstallGuide';
-
 
 // Styles
 import './componentStyles/HomePage.css';
@@ -84,7 +79,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 
                                 <Route path="join" element={<JoinPage />} />
                                 <Route path="login" element={<LoginPage />} />
-                                <Route path="verify-email/:token" element={<VerifyEmail />} />
                                 
                                 {/* Protected Pages */}
                                 <Route path="cart" element={

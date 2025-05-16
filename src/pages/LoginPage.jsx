@@ -15,12 +15,11 @@ function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
+  const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [needsVerification, setNeedsVerification] = useState(false);
-  const [userEmail, setUserEmail] = useState('');
   const navigate = useNavigate();
-  const { login, resendVerification } = useAuth();
+  const { login } = useAuth();
   const { showToast } = useToast();
 
   useEffect(() => {
@@ -39,7 +38,10 @@ function LoginPage() {
       [name]: value
     }));
     if (error) setError('');
-    if (needsVerification) setNeedsVerification(false);
+    // Clear errors when user types
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: '' }));
+    }
   };
 
   const toggleShowPassword = () => {
@@ -50,35 +52,13 @@ function LoginPage() {
     const newErrors = {};
     if (!formData.username) newErrors.username = 'Username is required';
     if (!formData.password) newErrors.password = 'Password is required';
-    setError(newErrors.username || newErrors.password || '');
+    
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleResendVerification = async () => {
-    if (!userEmail) {
-      setError('Email address not available');
-      return;
+    const hasErrors = Object.keys(newErrors).length > 0;
+    if (hasErrors) {
+      setError(Object.values(newErrors)[0]);
     }
-
-    setLoading(true);
-    try {
-      console.log('Attempting to resend verification email to:', userEmail);
-      const result = await resendVerification(userEmail);
-      console.log('Resend verification result:', result);
-
-      if (result.success) {
-        setError('');
-        showToast('Verification email sent! Please check your inbox.', 'success');
-      } else {
-        setError(result.error || 'Failed to resend verification email');
-      }
-    } catch (err) {
-      console.error('Resend verification error:', err);
-      setError('Failed to resend verification email');
-    } finally {
-      setLoading(false);
-    }
+    return !hasErrors;
   };
 
   const handleSubmit = async (e) => {
@@ -91,12 +71,9 @@ function LoginPage() {
     
     setError('');
     setLoading(true);
-    setNeedsVerification(false);
 
     try {
-      console.log('Attempting login with username:', formData.username);
       const result = await login(formData.username, formData.password, rememberMe);
-      console.log('Login result:', result);
 
       if (result.success) {
         setSuccess(true);
@@ -105,13 +82,7 @@ function LoginPage() {
           navigate('/');
         }, 1000);
       } else {
-        if (result.needsVerification) {
-          setNeedsVerification(true);
-          setUserEmail(result.email);
-          setError('Please verify your email before logging in');
-        } else {
-          setError(result.error || 'Invalid username or password');
-        }
+        setError(result.error || 'Invalid username or password');
       }
     } catch (err) {
       console.error('Login submission error:', err);
@@ -130,16 +101,6 @@ function LoginPage() {
           {error && (
             <div className="error-message">
               {error}
-              {needsVerification && (
-                <button
-                  type="button"
-                  onClick={handleResendVerification}
-                  className="resend-verification-button"
-                  disabled={loading}
-                >
-                  Resend verification email
-                </button>
-              )}
             </div>
           )}
           

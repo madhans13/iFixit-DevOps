@@ -41,7 +41,6 @@ export const AuthProvider = ({ children }) => {
   const getErrorMessage = (error) => {
     if (error.includes('credentials')) return 'Invalid username or password';
     if (error.includes('exists')) return 'This username is already registered';
-    if (error.includes('verified')) return 'Please verify your email first';
     if (error.includes('Password')) return error;
     return 'An unexpected error occurred. Please try again.';
   };
@@ -57,8 +56,6 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (username, password, rememberMe = false) => {
     try {
-      console.log('Login attempt with:', { username, password: '***', rememberMe });
-      
       const response = await fetch('http://localhost:5000/api/auth/login', {
         method: 'POST',
         headers: {
@@ -68,40 +65,11 @@ export const AuthProvider = ({ children }) => {
       });
 
       const data = await response.json();
-      console.log('Login response:', data);
 
       if (!response.ok) {
-        console.error('Login failed with status:', response.status);
-        console.error('Error details:', data);
-        
-        // Check for specific error cases
-        if (data.error === 'Invalid username or password') {
-          return {
-            success: false,
-            error: 'Invalid username or password'
-          };
-        }
-        if (data.error.includes('verify')) {
-          return {
-            success: false,
-            error: 'Please verify your email first',
-            needsVerification: true,
-            email: data.email
-          };
-        }
         return {
           success: false,
-          error: data.error || 'Login failed'
-        };
-      }
-
-      // Check verification status from the response
-      if (data.user && !data.user.isVerified) {
-        return {
-          success: false,
-          error: 'Please verify your email first',
-          needsVerification: true,
-          email: data.user.email
+          error: data.error || 'Invalid username or password'
         };
       }
 
@@ -115,11 +83,6 @@ export const AuthProvider = ({ children }) => {
       return { success: true };
     } catch (error) {
       console.error('Login error:', error);
-      console.error('Error details:', {
-        name: error.name,
-        message: error.message,
-        stack: error.stack
-      });
       return { 
         success: false, 
         error: 'An unexpected error occurred. Please try again.'
@@ -159,70 +122,7 @@ export const AuthProvider = ({ children }) => {
 
       return { 
         success: true,
-        message: 'Registration successful! Please check your email to verify your account.'
-      };
-    } catch (error) {
-      return { 
-        success: false, 
-        error: getErrorMessage(error.message)
-      };
-    }
-  };
-
-  const verifyEmail = async (token) => {
-    try {
-      console.log('Verifying email with token:', token);
-      const response = await fetch('http://localhost:5000/api/auth/verify-email', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ token }),
-      });
-
-      const data = await response.json();
-      console.log('Verification response:', data);
-
-      if (!response.ok) {
-        console.error('Verification failed:', data.error);
-        return {
-          success: false,
-          error: data.error || 'Verification failed'
-        };
-      }
-
-      return { 
-        success: true,
-        message: data.message || 'Email verified successfully'
-      };
-    } catch (error) {
-      console.error('Verification error:', error);
-      return { 
-        success: false, 
-        error: getErrorMessage(error.message)
-      };
-    }
-  };
-
-  const resendVerification = async (email) => {
-    try {
-      const response = await fetch('http://localhost:5000/api/auth/resend-verification', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to resend verification email');
-      }
-
-      return { 
-        success: true,
-        message: 'Verification email sent! Please check your inbox.'
+        message: 'Registration successful! You can now log in.'
       };
     } catch (error) {
       return { 
@@ -242,13 +142,11 @@ export const AuthProvider = ({ children }) => {
 
   const value = {
     user,
+    loading,
     login,
     register,
     logout,
-    loading,
-    sessionExpiry,
-    verifyEmail,
-    resendVerification
+    sessionExpiry
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
