@@ -108,7 +108,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Connect to MongoDB
-mongoose.connect('mongodb://127.0.0.1:27017/ifixit', {
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://mongodb:27017/ifixitt', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
