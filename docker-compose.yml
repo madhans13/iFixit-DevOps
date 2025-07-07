@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   frontend:
-    build:
+    build: 
       context: .
       dockerfile: Dockerfile
     ports:
@@ -12,11 +12,12 @@ services:
     environment:
       - VITE_API_URL=http://localhost:5000
     volumes:
-      - .:/app
+      - ./:/app
       - /app/node_modules
+    command: npm run dev -- --host
 
   backend:
-    build:
+    build: 
       context: ./backend
       dockerfile: Dockerfile
     ports:

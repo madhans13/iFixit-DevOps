@@ -1,5 +1,5 @@
 # Build stage
-FROM node:18-alpine
+FROM node:18-alpine AS build
 
 WORKDIR /app
 
@@ -12,6 +12,20 @@ RUN npm install
 # Copy project files
 COPY . .
 
-EXPOSE 5173
+# Build the application
+RUN npm run build
 
-CMD ["npm", "run", "dev", "--", "--host"] 
+# Production stage
+FROM nginx:1.24.0-alpine
+
+# Copy built files from build stage
+COPY --from=build /app/dist /usr/share/nginx/html
+
+# Copy custom nginx configuration if needed
+# COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose port 80
+EXPOSE 80
+
+# Start Nginx
+CMD ["nginx", "-g", "daemon off;"] 

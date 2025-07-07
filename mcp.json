@@ -1,0 +1,10 @@
+{
+  "servers": [
+    {
+      "name": "kubernetes",
+      "enabled": true,
+      "command": "/usr/bin/python3 -m kubectl_mcp_tool minimal_wrapper",
+      "topics": ["process", "natural_language", "advanced_kubernetes_query", "kubernetes_yaml_gen"]
+    }
+  ]
+} 

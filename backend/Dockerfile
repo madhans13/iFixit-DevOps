@@ -11,6 +11,9 @@ RUN npm install
 # Copy project files
 COPY . .
 
+# Create uploads directory
+RUN mkdir -p uploads
+
 EXPOSE 5000
 
-CMD ["npm", "start"] 
+CMD ["npm", "run", "dev"] 

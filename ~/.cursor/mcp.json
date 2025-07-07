@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "kubernetes": {
+      "command": "python",
+      "args": ["-m", "kubectl_mcp_tool.mcp_server"],
+      "env": {
+        "KUBECONFIG": "%USERPROFILE%\\.kube\\config",
+        "PATH": "C:\\Program Files\\Python\\Scripts;C:\\Program Files\\Python;C:\\Program Files\\Helm\\bin;C:\\ProgramData\\chocolatey\\bin;%PATH%"
+      }
+    }
+  }
+} 

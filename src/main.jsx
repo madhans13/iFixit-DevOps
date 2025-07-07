@@ -27,7 +27,7 @@ import LaptopPage from './Repair/Laptop';
 import AsusPage from './pages/brands/asus';
 import AsusTufDash15 from './pages/brands/AsusTufDash15';
 import BatteryReplacement from './pages/repair/BatteryReplacement';
-import PhoneRepairPage from './Repair/phone';
+import PhoneRepairPage from './Repair/Phone';
 import OnePlusPage from './pages/brands/oneplus';
 import OnePlus9Page from './pages/brands/oneplus9';
 import PhoneBatteryReplacementPage from './pages/repair/PhoneBatteryReplacementPage';
