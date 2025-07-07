@@ -9,7 +9,11 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "start": "concurrently \"cd backend && npm start\" \"cd src && npm run dev\"",
-    "install-all": "npm install && cd backend && npm install && cd ../src && npm install"
+    "install-all": "npm install && cd backend && npm install && cd ../src && npm install",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+  "test": "react-scripts test",
+  "eject": "react-scripts eject"
   },
   "dependencies": {
     "axios": "^1.9.0",
