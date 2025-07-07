@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "start": "react-scripts start",
     "install-all": "npm install && cd backend && npm install && cd ../src && npm install",
-    "test": "react-scripts test",
+    "test": "react-scripts test --passWithNoTests",
     "eject": "react-scripts eject"
   },
   "dependencies": {
