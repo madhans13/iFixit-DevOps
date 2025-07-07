@@ -33,7 +33,7 @@ function HomePage() {
       
       {/* --- Blue Banner --- */}
       <div className="shipping-banner">
-        Welcome to world of repair
+        Welcome to world of repair!
       </div>
 
       {/* --- Hero Section --- */}
