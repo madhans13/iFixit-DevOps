@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ifixit-backend
+spec:
+  selector:
+    app: ifixit-backend
+  ports:
+    - protocol: TCP
+      port: 5000
+      targetPort: 5000

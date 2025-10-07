@@ -1,22 +1,20 @@
-const mongoose = require('mongoose');
-const User = require('../models/User');
+const sequelize = require('../config/database');
+const { User } = require('../models');
 
-mongoose.connect('mongodb://127.0.0.1:27017/ifixit', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-}).then(async () => {
-  console.log('Connected to MongoDB');
-  
+async function createAdmin() {
   try {
+    await sequelize.authenticate();
+    console.log('Connected to PostgreSQL');
+    
     // Check if admin already exists
-    const existingAdmin = await User.findOne({ email: 'admin@ifixitt.com' });
+    const existingAdmin = await User.findOne({ where: { email: 'admin@ifixitt.com' } });
     if (existingAdmin) {
       console.log('Admin user already exists');
       process.exit(0);
     }
 
     // Create admin user
-    const adminUser = new User({
+    const adminUser = await User.create({
       username: 'admin',
       email: 'admin@ifixitt.com',
       password: 'admin123',
@@ -27,14 +25,12 @@ mongoose.connect('mongodb://127.0.0.1:27017/ifixit', {
       }]
     });
 
-    await adminUser.save();
     console.log('Admin user created successfully');
     process.exit(0);
   } catch (error) {
     console.error('Error creating admin user:', error);
     process.exit(1);
   }
-}).catch(err => {
-  console.error('Error connecting to MongoDB:', err);
-  process.exit(1);
-}); 
+}
+
+createAdmin(); 

@@ -1,0 +1,5 @@
+datadog:
+ apiKeyExistingSecret: datadog-secret
+ clusterName: kind-kind
+ site: us5.datadoghq.com
+ usePodNameAsHostname: true

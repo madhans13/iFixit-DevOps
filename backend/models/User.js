@@ -1,93 +1,87 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
 const bcrypt = require('bcryptjs');
 
-const userSchema = new mongoose.Schema({
+const User = sequelize.define('User', {
+  id: {
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+    primaryKey: true
+  },
   username: {
-    type: String,
-    required: true,
+    type: DataTypes.STRING,
+    allowNull: false,
     unique: true,
-    trim: true,
-    minlength: 3,
-    index: true
+    validate: {
+      len: [3, 50]
+    }
   },
   email: {
-    type: String,
-    required: true,
+    type: DataTypes.STRING,
+    allowNull: false,
     unique: true,
-    trim: true,
-    lowercase: true
+    validate: {
+      isEmail: true
+    }
   },
   password: {
-    type: String,
-    required: true,
-    minlength: 8
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      len: [8, 255]
+    }
   },
   googleId: {
-    type: String,
-    sparse: true,
+    type: DataTypes.STRING,
+    allowNull: true,
     unique: true
   },
-  profilePicture: String,
+  profilePicture: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
   reputation: {
-    type: Number,
-    default: 0
+    type: DataTypes.INTEGER,
+    defaultValue: 0
   },
   role: {
-    type: String,
-    enum: ['user', 'expert', 'admin'],
-    default: 'user'
+    type: DataTypes.ENUM('user', 'expert', 'admin'),
+    defaultValue: 'user'
   },
-  expertise: [{
-    category: String,
-    level: {
-      type: String,
-      enum: ['beginner', 'intermediate', 'expert']
-    }
-  }],
-  completedRepairs: [{
-    guideId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Guide'
-    },
-    completedAt: Date,
-    difficulty: Number,
-    success: Boolean
-  }],
-  savedGuides: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Guide'
-  }],
+  expertise: {
+    type: DataTypes.JSONB,
+    defaultValue: []
+  },
+  completedRepairs: {
+    type: DataTypes.JSONB,
+    defaultValue: []
+  },
+  savedGuides: {
+    type: DataTypes.JSONB,
+    defaultValue: []
+  },
   loginAttempts: {
-    type: Number,
-    default: 0
+    type: DataTypes.INTEGER,
+    defaultValue: 0
   },
-  lockUntil: Date,
-  createdAt: {
-    type: Date,
-    default: Date.now
+  lockUntil: {
+    type: DataTypes.DATE,
+    allowNull: true
   }
 }, {
-  timestamps: true
-});
-
-// Create compound index for login attempts
-userSchema.index({ username: 1, loginAttempts: 1, lockUntil: 1 });
-
-// Hash password before saving
-userSchema.pre('save', async function(next) {
-  if (!this.isModified('password')) return next();
-  
-  try {
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
-    next();
-  } catch (error) {
-    next(error);
+  tableName: 'users',
+  hooks: {
+    beforeSave: async (user) => {
+      if (user.changed('password')) {
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(user.password, salt);
+      }
+    }
   }
 });
 
-// Compare password method
-userSchema.methods.comparePassword = async function(candidatePassword) {
+// Instance methods
+User.prototype.comparePassword = async function(candidatePassword) {
   try {
     console.log('Comparing passwords for user:', this.username);
     const isMatch = await bcrypt.compare(candidatePassword, this.password);
@@ -99,38 +93,35 @@ userSchema.methods.comparePassword = async function(candidatePassword) {
   }
 };
 
-// Check if account is locked
-userSchema.methods.isLocked = function() {
-  return !!(this.lockUntil && this.lockUntil > Date.now());
+User.prototype.isLocked = function() {
+  return !!(this.lockUntil && this.lockUntil > new Date());
 };
 
-// Increment login attempts
-userSchema.methods.incrementLoginAttempts = async function() {
+User.prototype.incrementLoginAttempts = async function() {
   // Reset attempts if lock has expired
-  if (this.lockUntil && this.lockUntil < Date.now()) {
-    return await this.updateOne({
-      $set: { loginAttempts: 1 },
-      $unset: { lockUntil: 1 }
+  if (this.lockUntil && this.lockUntil < new Date()) {
+    return await this.update({
+      loginAttempts: 1,
+      lockUntil: null
     });
   }
 
   // Otherwise increment
-  const updates = { $inc: { loginAttempts: 1 } };
+  const updates = { loginAttempts: this.loginAttempts + 1 };
   
   // Lock the account if we've reached max attempts
   if (this.loginAttempts + 1 >= 5) {
-    updates.$set = { lockUntil: Date.now() + 1800000 }; // Lock for 30 minutes
+    updates.lockUntil = new Date(Date.now() + 1800000); // Lock for 30 minutes
   }
 
-  return await this.updateOne(updates);
+  return await this.update(updates);
 };
 
-// Reset login attempts
-userSchema.methods.resetLoginAttempts = function() {
-  return this.updateOne({
-    $set: { loginAttempts: 0 },
-    $unset: { lockUntil: 1 }
+User.prototype.resetLoginAttempts = function() {
+  return this.update({
+    loginAttempts: 0,
+    lockUntil: null
   });
 };
 
-module.exports = mongoose.model('User', userSchema); 
+module.exports = User; 

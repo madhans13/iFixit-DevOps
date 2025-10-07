@@ -1,125 +1,89 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
 
-const productSchema = new mongoose.Schema({
+const Product = sequelize.define('Product', {
+  id: {
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+    primaryKey: true
+  },
   name: {
-    type: String,
-    required: true,
-    index: true
+    type: DataTypes.STRING,
+    allowNull: false
   },
   description: {
-    type: String,
-    required: true
+    type: DataTypes.TEXT,
+    allowNull: false
   },
   category: {
-    type: String,
-    enum: ['tool', 'part', 'kit'],
-    required: true
+    type: DataTypes.ENUM('tool', 'part', 'kit'),
+    allowNull: false
   },
   price: {
-    value: {
-      type: Number,
-      required: true
-    },
-    currency: {
-      type: String,
-      default: 'USD'
-    }
+    type: DataTypes.JSONB,
+    allowNull: false
   },
   stock: {
-    type: Number,
-    required: true,
-    min: 0
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    validate: {
+      min: 0
+    }
   },
-  images: [{
-    url: String,
-    isPrimary: Boolean
-  }],
+  images: {
+    type: DataTypes.JSONB,
+    defaultValue: []
+  },
   specifications: {
-    type: Map,
-    of: String
+    type: DataTypes.JSONB,
+    defaultValue: {}
   },
-  compatibility: [{
-    deviceId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Device'
-    },
-    models: [String]
-  }],
+  compatibility: {
+    type: DataTypes.JSONB,
+    defaultValue: []
+  },
   manufacturer: {
-    name: String,
-    partNumber: String
+    type: DataTypes.JSONB,
+    defaultValue: {}
   },
-  ratings: [{
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User'
-    },
-    score: {
-      type: Number,
-      min: 1,
-      max: 5
-    },
-    review: String,
-    date: {
-      type: Date,
-      default: Date.now
-    },
-    verified: {
-      type: Boolean,
-      default: false
-    }
-  }],
+  ratings: {
+    type: DataTypes.JSONB,
+    defaultValue: []
+  },
   averageRating: {
-    type: Number,
-    default: 0
+    type: DataTypes.DECIMAL(3, 2),
+    defaultValue: 0
   },
-  features: [String],
+  features: {
+    type: DataTypes.JSONB,
+    defaultValue: []
+  },
   weight: {
-    value: Number,
-    unit: {
-      type: String,
-      enum: ['g', 'kg', 'oz', 'lb'],
-      default: 'g'
-    }
+    type: DataTypes.JSONB,
+    defaultValue: {}
   },
   dimensions: {
-    length: Number,
-    width: Number,
-    height: Number,
-    unit: {
-      type: String,
-      enum: ['mm', 'cm', 'in'],
-      default: 'mm'
-    }
+    type: DataTypes.JSONB,
+    defaultValue: {}
   },
   status: {
-    type: String,
-    enum: ['active', 'discontinued', 'out_of_stock'],
-    default: 'active'
+    type: DataTypes.ENUM('active', 'discontinued', 'out_of_stock'),
+    defaultValue: 'active'
   },
-  tags: [{
-    type: String,
-    index: true
-  }]
-}, {
-  timestamps: true
-});
-
-// Index for full-text search
-productSchema.index({
-  name: 'text',
-  description: 'text',
-  'manufacturer.name': 'text',
-  'manufacturer.partNumber': 'text'
-});
-
-// Calculate average rating before saving
-productSchema.pre('save', function(next) {
-  if (this.ratings && this.ratings.length > 0) {
-    const total = this.ratings.reduce((sum, rating) => sum + rating.score, 0);
-    this.averageRating = total / this.ratings.length;
+  tags: {
+    type: DataTypes.JSONB,
+    defaultValue: []
   }
-  next();
+}, {
+  tableName: 'products',
+  hooks: {
+    beforeSave: (product) => {
+      if (product.ratings && product.ratings.length > 0) {
+        const total = product.ratings.reduce((sum, rating) => sum + rating.score, 0);
+        product.averageRating = total / product.ratings.length;
+      }
+    }
+  }
 });
 
-module.exports = mongoose.model('Product', productSchema); 
+module.exports = Product; 

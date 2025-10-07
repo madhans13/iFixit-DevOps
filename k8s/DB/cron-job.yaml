@@ -1,0 +1,35 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: postgres-backup-cron
+  namespace: demo-app
+spec:
+  schedule: "0 2 * * *"  # Daily at 2 AM
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: postgres-backup
+            image: postgres:17
+            env:
+              - name: PGPASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: cluster-example-app   # Secret holding your Postgres password
+                    key: password
+            command:
+              - /bin/sh
+              - -c
+              - |
+                BACKUP_DIR=/backup/$(date +\%F)
+                mkdir -p $BACKUP_DIR
+                pg_dump -h cluster-example-rw -U app app > $BACKUP_DIR/app.sql
+            volumeMounts:
+              - name: backup-volume
+                mountPath: /backup
+          restartPolicy: OnFailure
+          volumes:
+            - name: backup-volume
+              persistentVolumeClaim:
+                claimName: postgres-backup-pvc

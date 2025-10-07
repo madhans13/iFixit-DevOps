@@ -1,104 +1,86 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
 
-const guideSchema = new mongoose.Schema({
+const Guide = sequelize.define('Guide', {
+  id: {
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+    primaryKey: true
+  },
   title: {
-    type: String,
-    required: true,
-    index: true
+    type: DataTypes.STRING,
+    allowNull: false
   },
   category: {
-    type: String,
-    enum: ['repair', 'maintenance', 'upgrade'],
-    required: true
+    type: DataTypes.ENUM('repair', 'maintenance', 'upgrade'),
+    allowNull: false
   },
   difficulty: {
-    type: Number,
-    min: 1,
-    max: 4,
-    required: true
-  },
-  timeRequired: {
-    value: {
-      type: Number,
-      required: true
-    },
-    unit: {
-      type: String,
-      enum: ['minutes', 'hours'],
-      default: 'minutes'
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    validate: {
+      min: 1,
+      max: 4
     }
   },
+  timeRequired: {
+    type: DataTypes.JSONB,
+    allowNull: false
+  },
   introduction: {
-    type: String,
-    required: true
+    type: DataTypes.TEXT,
+    allowNull: false
   },
-  prerequisites: [{
-    type: String
-  }],
-  steps: [{
-    order: {
-      type: Number,
-      required: true
-    },
-    title: {
-      type: String,
-      required: true
-    },
-    description: {
-      type: String,
-      required: true
-    },
-    images: [{
-      url: String,
-      caption: String
-    }],
-    warnings: [String],
-    tips: [String]
-  }],
-  author: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
+  prerequisites: {
+    type: DataTypes.JSONB,
+    defaultValue: []
   },
-  device: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Device',
-    required: true
+  steps: {
+    type: DataTypes.JSONB,
+    defaultValue: []
+  },
+  authorId: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    references: {
+      model: 'users',
+      key: 'id'
+    }
+  },
+  deviceId: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    references: {
+      model: 'devices',
+      key: 'id'
+    }
   },
   status: {
-    type: String,
-    enum: ['draft', 'published', 'archived'],
-    default: 'draft'
+    type: DataTypes.ENUM('draft', 'published', 'archived'),
+    defaultValue: 'draft'
   },
   views: {
-    type: Number,
-    default: 0
+    type: DataTypes.INTEGER,
+    defaultValue: 0
   },
   likes: {
-    type: Number,
-    default: 0
+    type: DataTypes.INTEGER,
+    defaultValue: 0
   },
-  comments: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Comment'
-  }],
-  tags: [{
-    type: String,
-    index: true
-  }],
+  comments: {
+    type: DataTypes.JSONB,
+    defaultValue: []
+  },
+  tags: {
+    type: DataTypes.JSONB,
+    defaultValue: []
+  },
   version: {
-    type: Number,
-    default: 1
+    type: DataTypes.INTEGER,
+    defaultValue: 1
   }
 }, {
-  timestamps: true
+  tableName: 'guides'
 });
 
-// Index for full-text search
-guideSchema.index({
-  title: 'text',
-  introduction: 'text',
-  'steps.description': 'text'
-});
-
-module.exports = mongoose.model('Guide', guideSchema); 
+module.exports = Guide; 

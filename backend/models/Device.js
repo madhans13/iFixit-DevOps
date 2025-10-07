@@ -1,46 +1,50 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
 
-const deviceSchema = new mongoose.Schema({
+const Device = sequelize.define('Device', {
+  id: {
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+    primaryKey: true
+  },
   name: {
-    type: String,
-    required: true,
-    index: true
+    type: DataTypes.STRING,
+    allowNull: false
   },
   brand: {
-    type: String,
-    required: true,
-    index: true
+    type: DataTypes.STRING,
+    allowNull: false
   },
   category: {
-    type: String,
-    enum: ['phone', 'laptop', 'tablet', 'desktop', 'console', 'other'],
-    required: true
+    type: DataTypes.ENUM('phone', 'laptop', 'tablet', 'desktop', 'console', 'other'),
+    allowNull: false
   },
   model: {
-    type: String,
-    required: true
+    type: DataTypes.STRING,
+    allowNull: false
   },
-  releaseYear: Number,
+  releaseYear: {
+    type: DataTypes.INTEGER,
+    allowNull: true
+  },
   specifications: {
-    type: Map,
-    of: String
+    type: DataTypes.JSONB,
+    defaultValue: {}
   },
-  description: String,
-  image: String,
+  description: {
+    type: DataTypes.TEXT,
+    allowNull: true
+  },
+  image: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
   status: {
-    type: String,
-    enum: ['active', 'discontinued', 'upcoming'],
-    default: 'active'
+    type: DataTypes.ENUM('active', 'discontinued', 'upcoming'),
+    defaultValue: 'active'
   }
 }, {
-  timestamps: true
+  tableName: 'devices'
 });
 
-// Index for full-text search
-deviceSchema.index({
-  name: 'text',
-  brand: 'text',
-  model: 'text'
-});
-
-module.exports = mongoose.model('Device', deviceSchema); 
+module.exports = Device; 

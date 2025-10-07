@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
-const mongoose = require('mongoose');
+const sequelize = require('./config/database');
+const { Op } = require('sequelize');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
@@ -18,10 +19,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Import models
-const User = require('./models/User');
-const Guide = require('./models/Guide');
-const Product = require('./models/Product');
-const Device = require('./models/Device');
+const { User, Guide, Product, Device } = require('./models');
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
@@ -107,13 +105,22 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://mongodb:27017/ifixitt', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => console.log('Connected to MongoDB'))
-.catch(err => console.error('MongoDB connection error:', err));
+// Connect to PostgreSQL
+const connectDB = async () => {
+  try {
+    await sequelize.authenticate();
+    console.log('Connected to PostgreSQL');
+    
+    // Sync database (create tables if they don't exist)
+    await sequelize.sync({ force: true });
+    console.log('Database synchronized');
+  } catch (error) {
+    console.error('PostgreSQL connection error:', error);
+    process.exit(1);
+  }
+};
+
+connectDB();
 
 // Authentication Middleware
 const authenticateToken = (req, res, next) => {
@@ -139,9 +146,12 @@ app.use('/api/auth', authRoutes);
 // Guide Routes
 app.get('/api/guides/:guideId', async (req, res) => {
   try {
-    const guide = await Guide.findById(req.params.guideId)
-      .populate('author', 'username reputation')
-      .populate('device', 'name brand');
+    const guide = await Guide.findByPk(req.params.guideId, {
+      include: [
+        { model: User, as: 'author', attributes: ['username', 'reputation'] },
+        { model: Device, as: 'device', attributes: ['name', 'brand'] }
+      ]
+    });
     
     if (!guide) {
       return res.status(404).json({ error: 'Guide not found' });
@@ -161,38 +171,48 @@ app.get('/api/guides/:guideId', async (req, res) => {
 app.get('/api/guides', async (req, res) => {
   try {
     const { search, category, difficulty, sort = 'newest' } = req.query;
-    let query = {};
+    let whereClause = {};
 
-    if (search) {
-      query.$text = { $search: search };
-    }
     if (category) {
-      query.category = category;
+      whereClause.category = category;
     }
     if (difficulty) {
-      query.difficulty = parseInt(difficulty);
+      whereClause.difficulty = parseInt(difficulty);
     }
 
-    let sortOption = {};
+    let orderClause = [];
     switch (sort) {
       case 'newest':
-        sortOption = { createdAt: -1 };
+        orderClause = [['createdAt', 'DESC']];
         break;
       case 'popular':
-        sortOption = { views: -1 };
+        orderClause = [['views', 'DESC']];
         break;
       case 'rating':
-        sortOption = { averageRating: -1 };
+        orderClause = [['averageRating', 'DESC']];
         break;
     }
 
-    const guides = await Guide.find(query)
-      .sort(sortOption)
-      .populate('author', 'username reputation')
-      .populate('device', 'name brand')
-      .limit(20);
+    const guides = await Guide.findAll({
+      where: whereClause,
+      order: orderClause,
+      include: [
+        { model: User, as: 'author', attributes: ['username', 'reputation'] },
+        { model: Device, as: 'device', attributes: ['name', 'brand'] }
+      ],
+      limit: 20
+    });
 
-    res.json(guides);
+    // If search is provided, filter results (PostgreSQL full-text search would be better)
+    let filteredGuides = guides;
+    if (search) {
+      filteredGuides = guides.filter(guide => 
+        guide.title.toLowerCase().includes(search.toLowerCase()) ||
+        guide.introduction.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+
+    res.json(filteredGuides);
   } catch (error) {
     res.status(500).json({ error: 'Error fetching guides' });
   }
@@ -247,8 +267,10 @@ app.post('/api/guides', authenticateToken, upload.array('images'), async (req, r
 
     // Find or create device
     let device = await Device.findOne({ 
-      name: deviceName,
-      brand: deviceBrand
+      where: {
+        name: deviceName,
+        brand: deviceBrand
+      }
     });
 
     if (!device) {
@@ -262,7 +284,7 @@ app.post('/api/guides', authenticateToken, upload.array('images'), async (req, r
     }
 
     // Create guide with processed steps
-    const guide = new Guide({
+    const guide = await Guide.create({
       title,
       category,
       difficulty: parseInt(difficulty),
@@ -271,16 +293,17 @@ app.post('/api/guides', authenticateToken, upload.array('images'), async (req, r
       prerequisites: parsedPrerequisites,
       steps: processedSteps,
       status,
-      author: req.user.id,
-      device: device._id
+      authorId: req.user.id,
+      deviceId: device.id
     });
-
-    const savedGuide = await guide.save();
     
-    // Populate the response with author details
-    const populatedGuide = await Guide.findById(savedGuide._id)
-      .populate('author', 'username')
-      .populate('device', 'name brand');
+    // Fetch the created guide with associations
+    const populatedGuide = await Guide.findByPk(guide.id, {
+      include: [
+        { model: User, as: 'author', attributes: ['username'] },
+        { model: Device, as: 'device', attributes: ['name', 'brand'] }
+      ]
+    });
 
     res.status(201).json(populatedGuide);
   } catch (error) {
@@ -293,23 +316,31 @@ app.post('/api/guides', authenticateToken, upload.array('images'), async (req, r
 app.get('/api/products', async (req, res) => {
   try {
     const { search, category, inStock } = req.query;
-    let query = {};
+    let whereClause = {};
 
-    if (search) {
-      query.$text = { $search: search };
-    }
     if (category) {
-      query.category = category;
+      whereClause.category = category;
     }
     if (inStock === 'true') {
-      query.stock = { $gt: 0 };
+      whereClause.stock = { [Op.gt]: 0 };
     }
 
-    const products = await Product.find(query)
-      .sort({ averageRating: -1 })
-      .limit(20);
+    const products = await Product.findAll({
+      where: whereClause,
+      order: [['averageRating', 'DESC']],
+      limit: 20
+    });
 
-    res.json(products);
+    // If search is provided, filter results
+    let filteredProducts = products;
+    if (search) {
+      filteredProducts = products.filter(product => 
+        product.name.toLowerCase().includes(search.toLowerCase()) ||
+        product.description.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+
+    res.json(filteredProducts);
   } catch (error) {
     res.status(500).json({ error: 'Error fetching products' });
   }
@@ -317,8 +348,7 @@ app.get('/api/products', async (req, res) => {
 
 app.post('/api/products', authenticateToken, async (req, res) => {
   try {
-    const product = new Product(req.body);
-    await product.save();
+    const product = await Product.create(req.body);
     res.status(201).json(product);
     } catch (error) {
     res.status(500).json({ error: 'Error creating product' });
@@ -328,9 +358,13 @@ app.post('/api/products', authenticateToken, async (req, res) => {
 // User Profile Routes
 app.get('/api/users/:userId', authenticateToken, async (req, res) => {
   try {
-    const user = await User.findById(req.params.userId)
-      .select('-password')
-      .populate('savedGuides');
+    const user = await User.findByPk(req.params.userId, {
+      attributes: { exclude: ['password'] },
+      include: [
+        { model: Guide, as: 'guides', attributes: ['id', 'title', 'createdAt'] }
+      ]
+    });
+    
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }

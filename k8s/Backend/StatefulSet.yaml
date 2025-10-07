@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: backend
+spec:
+  serviceName: ifixit-backend
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ifixit-backend
+  template:
+    metadata:
+      labels:
+        app: ifixit-backend
+    spec:
+      containers:
+        - name: ifixit-backend
+          image: madhan13/ifixit-backend:v6
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5000
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "200m"
+              memory: "256Mi"
+          env:
+            - name: POSTGRES_HOST
+              value: cluster-example-rw  # ✅ Fix the hostname
+            - name: POSTGRES_PORT
+              value: "5432"
+            - name: POSTGRES_DB
+              value: app
+            - name: POSTGRES_USER
+              value: app
+            - name: POSTGRES_PASSWORD
+              value: jwVo8wOOPLLkil1Xq5FYs8eCssRl9XwclMBoeh7gSAY8BHQP3TmAqo9pyltssG9X
+            - name: PORT
+              value: "5000"
+            - name: NODE_ENV
+              value: "production"
+            - name: JWT_SECRET
+              value: ifixitt_super_secret_key_2024
+            - name: SESSION_SECRET
+              value: ifixitt_session_secret_2024  # ✅ Add missing SESSION_SECRET
+            - name: VITE_API_URL
+              value: http://ifixit-backend:5000  # ✅ Use service name instead of localhost
+            - name: FRONTEND_URL
+              value: http://client-react-nginx:8080  # ✅ Use service name
+          

@@ -11,8 +11,12 @@ RUN npm install
 
 # Copy project files
 COPY . .
+<<<<<<< HEAD
 
 # Build the application
+=======
+# Build the application (this will create both build/ and dist/ directories)
+>>>>>>> 5d5e6b8 (Deployed on Kubernetes with HPA and db with cloudNativePG)
 RUN npm run build
 
 # Production stage
