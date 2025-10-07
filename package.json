@@ -5,11 +5,16 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "set DISABLE_ESLINT_PLUGIN=true && react-scripts build && vite build",
+    "build:vite": "vite build",
+    "build:cra": "set DISABLE_ESLINT_PLUGIN=true && react-scripts build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start": "concurrently \"cd backend && npm start\" \"cd src && npm run dev\"",
-    "install-all": "npm install && cd backend && npm install && cd ../src && npm install"
+    "start": "react-scripts start",
+    "start:vite": "vite",
+    "install-all": "npm install && cd backend && npm install && cd ../src && npm install",
+    "test": "react-scripts test --passWithNoTests",
+    "eject": "react-scripts eject"
   },
   "dependencies": {
     "axios": "^1.9.0",
@@ -31,6 +36,19 @@
     "eslint": "^8.45.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
+    "react-scripts": "^5.0.1",
     "vite": "^4.4.5"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }

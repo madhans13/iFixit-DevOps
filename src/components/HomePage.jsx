@@ -33,13 +33,13 @@ function HomePage() {
       
       {/* --- Blue Banner --- */}
       <div className="shipping-banner">
-        Welcome to world of repair
+        Welcome to world of repair!
       </div>
 
       {/* --- Hero Section --- */}
       <main className="hero-section">
         <div className="hero-content">
-          <h1>Explore a World of Repair</h1>
+          <h1>Hello Explore a World of Repair</h1>
           <SearchBar />
           <div className="separator">or</div>
           <button 
