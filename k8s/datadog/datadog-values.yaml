@@ -1,5 +1,39 @@
-datadog:
- apiKeyExistingSecret: datadog-secret
- clusterName: kind-kind
- site: us5.datadoghq.com
- usePodNameAsHostname: true
+apiVersion: datadoghq.com/v2alpha1
+kind: DatadogAgent
+metadata:
+  name: datadog
+  namespace: demo-app
+spec:
+  global:
+    site: "us5.datadoghq.com"
+    credentials:
+      apiSecret:
+        secretName: "datadog-secret"
+        keyName: "api-key"
+    kubelet:
+      tlsVerify: false
+    clusterName: "ifixit-cluster"  # ADD THIS - Required for orchestrator
+  features:
+    clusterChecks:
+      enabled: true
+    orchestratorExplorer:
+      enabled: true  # Enable Kubernetes Explorer
+      conf:
+        configMap:
+          items:
+            - key: orchestrator.yaml
+              path: orchestrator.yaml
+  override:
+    nodeAgent:
+      env:
+        - name: DD_ORCHESTRATOR_EXPLORER_ENABLED
+          value: "true"
+        - name: DD_KUBELET_TLS_VERIFY
+          value: "false"
+    clusterAgent:
+      env:
+        - name: DD_CLUSTER_NAME
+          value: "ifixit-cluster"
+        - name: DD_ORCHESTRATOR_EXPLORER_ENABLED
+          value: "true"
+      replicas: 1
